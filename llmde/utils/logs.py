@@ -266,14 +266,14 @@ logger = _init_logger()
 logger.__doc__ = """Main logger.
 
 This logger is used across the entire package. It's verbosity can be controlled by the
-function :func:`template.set_log_level` or by the ``verbose`` argument of callables
-decorated with the :func:`template.utils.logs.verbose` decorator.
+function :func:`llmde.set_log_level` or by the ``verbose`` argument of callables
+decorated with the :func:`llmde.utils.logs.verbose` decorator.
 
 Examples
 --------
 .. code-block:: python
 
-    from template.utils.logs import logger, set_log_level
+    from llmde.utils.logs import logger, set_log_level
 
     set_log_level("DEBUG")
     logger.debug("This debug message will be displayed.")
