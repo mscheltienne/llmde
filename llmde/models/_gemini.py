@@ -86,7 +86,7 @@ class GeminiModel(BaseModel):
         )
 
     def query(
-        self, prompt: str, json_schema: str, files: Iterable[str | Path]
+        self, prompt: str | Path, json_schema: str | Path, files: Iterable[str | Path]
     ) -> types.GenerateContentResponse:
         """Query the Gemini model with a given prompt and return the response.
 
