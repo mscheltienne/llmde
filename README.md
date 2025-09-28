@@ -6,4 +6,14 @@
 
 # LLMDE
 
-LLM-based data extraction from scientific papers.
+WIP: LLM-based data extraction from scientific papers.
+
+## Usage
+
+```python
+from llmde.models import GeminiModel
+
+api_key = ...
+model = GeminiModel("gemini-2.5-flash", api_key=api_key, temperature=0.1)
+model.query(path_to_prompt, path_to_json_schema, [path_to_file1, path_to_file2])
+```
