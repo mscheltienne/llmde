@@ -36,6 +36,7 @@ classifiers = [
   'Programming Language :: Python :: 3.13',
 ]
 dependencies = [
+  'anthropic',
   'click',
   'google-genai',
   'numpy>=1.23,<3',

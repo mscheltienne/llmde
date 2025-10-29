@@ -43,7 +43,7 @@ class GeminiModel(BaseModel):
             Value that controls the degree of randomness in token selection.
             Lower temperatures are good for prompts that require a less open-ended or
             creative response, while higher temperatures can lead to more diverse or
-            creative results.
+            creative results. Ranges from ``0.0`` to ``1.0``.
         top_p : float | None
             Tokens are selected from the most to least probable until the sum
             of their probabilities equals this value. Use a lower value for less
@@ -60,7 +60,11 @@ class GeminiModel(BaseModel):
         Notes
         -----
         See https://cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/adjust-parameter-values
-        for information about the parameters.
+        for information about the parameters. Recommended values are:
+
+        - ``temperature``: 0 or very low
+        - ``top_p``: 0 or very low
+        - ``top_k``: 1 or very low (minimum 1)
         """  # noqa: E501
         check_type(model_name, (str,), "model_name")
         check_type(api_key, (str,), "api_key")
@@ -72,18 +76,21 @@ class GeminiModel(BaseModel):
             system_instruction, (str, types.ContentUnion, None), "system_instruction"
         )
         check_type(temperature, ("numeric", None), "temperature")
+        if temperature is not None and (temperature < 0.0 or temperature > 1.0):
+            raise ValueError(
+                f"Temperature must be between 0.0 and 1.0. Provided {temperature} is "
+                "invalid."
+            )
         check_type(top_p, ("numeric", None), "top_p")
         check_type(top_k, ("numeric", None), "top_k")
         check_type(max_output_tokens, ("numeric", None), "max_output_tokens")
-        self._config = (
-            {
-                "system_instruction": system_instruction,
-                "temperature": temperature,
-                "top_p": top_p,
-                "top_k": top_k,
-                "max_output_tokens": max_output_tokens,
-            },
-        )
+        self._config = {
+            "system_instruction": system_instruction,
+            "temperature": temperature,
+            "top_p": top_p,
+            "top_k": top_k,
+            "max_output_tokens": max_output_tokens,
+        }
 
     def query(
         self, prompt: str | Path, json_schema: str | Path, files: Iterable[str | Path]
@@ -113,13 +120,15 @@ class GeminiModel(BaseModel):
             config = deepcopy(self._config)
             config["response_mime_type"] = "application/json"
             config["response_json_schema"] = read_json_schema(json_schema)
+        else:
+            config = self._config
 
         # Upload files and generate content
         uploaded_files = [self._client.files.upload(file=file) for file in files]
         response = self._client.models.generate_content(
             model=self._model_name,
             contents=[prompt, *uploaded_files],
-            config=types.GenerateContentConfig(**self._config),
+            config=types.GenerateContentConfig(**config),
         )
         return response
 
