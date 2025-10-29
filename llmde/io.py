@@ -9,13 +9,13 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-def read_prompt(path: str | Path) -> str:
-    """Read a prompt from a file.
+def read_markdown(path: str | Path) -> str:
+    """Read a markdown file.
 
     Parameters
     ----------
     path : str | Path
-        The path to the prompt file.
+        The path to the markdown file.
     """
     path = ensure_path(path, must_exist=True)
     with open(path, encoding="utf-8") as fid:

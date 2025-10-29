@@ -1,0 +1,57 @@
+{
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "year": {
+      "type": "integer",
+      "minimum": 1900,
+      "maximum": 2100
+    },
+    "journal": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "nullable": true
+        },
+        "page": {
+          "type": "integer",
+          "nullable": true
+        },
+        "quote": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "page", "quote"]
+    },
+    "doi": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "nullable": true
+        },
+        "page": {
+          "type": "integer",
+          "nullable": true
+        },
+        "quote": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "page", "quote"]
+    }
+  },
+  "required": ["title", "authors", "year", "journal", "doi"]
+}

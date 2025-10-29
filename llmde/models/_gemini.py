@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from google import genai
 from google.genai import types
 
-from ..io import read_json_schema, read_prompt
+from ..io import read_json_schema, read_markdown
 from ..utils._checks import check_type, ensure_path
 from ._base import BaseModel
 
@@ -111,7 +111,7 @@ class GeminiModel(BaseModel):
         response : types.GenerateContentResponse
             The response from the model.
         """
-        prompt = read_prompt(prompt)
+        prompt = read_markdown(prompt)
         check_type(files, (Iterable,), "files")
         files = [ensure_path(file, must_exist=True) for file in files]
 

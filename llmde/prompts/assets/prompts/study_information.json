@@ -1,0 +1,104 @@
+{
+  "type": "object",
+  "properties": {
+    "completion_status": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "enum": ["completed", "ongoing", "unclear"]
+        },
+        "page": {
+          "type": "integer",
+          "nullable": true
+        },
+        "quote": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "page", "quote"]
+    },
+    "countries": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "page": {
+          "type": "integer",
+          "nullable": true
+        },
+        "quote": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "page", "quote"]
+    },
+    "arms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["experimental", "active_control", "waitlist", "passive_control"]
+          },
+          "page": {
+            "type": "integer",
+            "nullable": true
+          },
+          "quote": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": ["name", "category", "page", "quote"]
+      },
+      "minItems": 1
+    },
+    "age": {
+      "type": "object",
+      "properties": {
+        "mean": {
+          "type": "number",
+          "nullable": true
+        },
+        "sd": {
+          "type": "number",
+          "nullable": true
+        },
+        "range": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "nullable": true
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "unit": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "nullable": true
+        },
+        "quote": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["mean", "sd", "range", "unit", "page", "quote"]
+    }
+  },
+  "required": ["completion_status", "countries", "arms", "age"]
+}

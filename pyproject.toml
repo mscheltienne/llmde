@@ -117,6 +117,7 @@ select = ['A', 'B', 'C4', 'D', 'E', 'F', 'G', 'I', 'LOG', 'NPY', 'PERF', 'PIE', 
 ]
 '*.pyi' = ['E501']
 '__init__.py' = ['F401']
+'scripts/*' = ['D205', 'D400', 'T201']
 'tutorials/*' = ['D205', 'D400', 'T201']
 
 [tool.ruff.lint.pydocstyle]
@@ -125,6 +126,9 @@ ignore-decorators = ["llmde.utils._docs.copy_doc"]
 
 [tool.setuptools]
 include-package-data = false
+
+[tool.setuptools.package-data]
+'llmde' = ['prompts/assets/*']
 
 [tool.setuptools.packages.find]
 exclude = ['llmde*tests']

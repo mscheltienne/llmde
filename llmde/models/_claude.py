@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from anthropic import Anthropic
 
-from ..io import read_prompt
+from ..io import read_markdown
 from ..utils._checks import check_type, ensure_path
 from ._base import BaseModel
 
@@ -88,7 +88,7 @@ class ClaudeModel(BaseModel):
         -----
         This method uses Claude's Files API to upload documents.
         """
-        prompt_text = read_prompt(prompt)
+        prompt_text = read_markdown(prompt)
         check_type(files, (Iterable,), "files")
         files = [ensure_path(file, must_exist=True) for file in files]
 
