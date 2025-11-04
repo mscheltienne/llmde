@@ -83,21 +83,23 @@ For each study arm/group/condition, extract:
 **Definitions:**
 
 - **`experimental`**: Group that receives the novel intervention or treatment being studied.
-- **`active_control`**: Group that receives a different, already established treatment, like the current standard of care (e.g., treatment as usual).
+- **`active_control`**: Group that receives a different, already established treatment, like the current standard of care (e.g., treatment as usual), or a sham treatment (a placebo) to control for other effects (e.g., placebo effects).
 - **`waitlist`**: Group that is on a waiting list to receive the experimental treatment after the study is over.
-- **`passive_control`**: Group that receives no intervention at all or a sham treatment (a placebo) that is not expected to have an active effect.
+- **`passive_control`**: Group that receives no intervention, live their life as usual during the intervention period (without intervention or no contact group).
 
-**Examples:**
+**Usual variable location:** Methods section
+
+**Examples of information relevant to complete the request:**
 
 ```
 Introduction: "Participants in exercise with VR were expected to report higher level of enjoyment than those who engagement in traditional exercises"
-→ 1. name="exercise with VR", category=experimental
-→ 2. name="traditional exercises", category=active_control
+→ 1. Experimental: exercise with VR
+→ 2. Active control: traditional exercises
 
 Methods: "Participants were randomized to one of three cohorts: a BOXVR group, a guided video group, or a nonintervention control group (n = 14)"
-→ 1. name="BOXVR group", category=experimental
-→ 2. name="guided video group", category=active_control
-→ 3. name="nonintervention control group", category=passive_control
+→ 1. Experimental: BOXVR group
+→ 2. Active control: guided video group
+→ 3. Passive control: nonintervention control group
 ```
 
 ### 4. Participant Age
