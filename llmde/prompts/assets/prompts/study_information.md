@@ -72,16 +72,20 @@ Title: "The effectiveness of game-based interventions in preventing anxiety in T
 
 ### 3. Study Conditions/Arms
 
+**Task**: List all study conditions and map each to one of the allowed values.
+
 For each study arm/group/condition, extract:
 - **Name**: The specific name or description used by the authors
-- **Category**: Classification into one of four types based on these definitions:
+- **Category**: Classification into one of the allowed values
 
-**Category Definitions:**
+**Allowed values:** [`experimental`, `active_control`, `waitlist`, `passive_control`]
 
-- **`experimental`**: Group receiving the novel intervention being studied (the primary treatment of interest)
-- **`active_control`**: Group receiving an established treatment or standard care (e.g., "treatment as usual", existing therapy)
-- **`waitlist`**: Group on a waiting list to receive the experimental treatment after the study concludes
-- **`passive_control`**: Group receiving no intervention or a sham/placebo treatment not expected to have active effects
+**Definitions:**
+
+- **`experimental`**: Group that receives the novel intervention or treatment being studied.
+- **`active_control`**: Group that receives a different, already established treatment, like the current standard of care (e.g., treatment as usual).
+- **`waitlist`**: Group that is on a waiting list to receive the experimental treatment after the study is over.
+- **`passive_control`**: Group that receives no intervention at all or a sham treatment (a placebo) that is not expected to have an active effect.
 
 **Examples:**
 
