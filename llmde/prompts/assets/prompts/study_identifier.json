@@ -2,19 +2,79 @@
   "type": "object",
   "properties": {
     "title": {
-      "type": "string"
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["value", "pages", "quotes"]
     },
     "authors": {
-      "type": "array",
-      "items": {
-        "type": "string"
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
       },
-      "minItems": 1
+      "required": ["value", "pages", "quotes"]
     },
     "year": {
-      "type": "integer",
-      "minimum": 1900,
-      "maximum": 2100
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "minimum": 1900,
+          "maximum": 2100
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["value", "pages", "quotes"]
     },
     "journal": {
       "type": "object",
@@ -23,16 +83,24 @@
           "type": "string",
           "nullable": true
         },
-        "page": {
-          "type": "integer",
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
           "nullable": true
         },
-        "quote": {
-          "type": "string",
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
           "nullable": true
         }
       },
-      "required": ["value", "page", "quote"]
+      "required": ["value", "pages", "quotes"]
     },
     "doi": {
       "type": "object",
@@ -41,16 +109,24 @@
           "type": "string",
           "nullable": true
         },
-        "page": {
-          "type": "integer",
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
           "nullable": true
         },
-        "quote": {
-          "type": "string",
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
           "nullable": true
         }
       },
-      "required": ["value", "page", "quote"]
+      "required": ["value", "pages", "quotes"]
     }
   },
   "required": ["title", "authors", "year", "journal", "doi"]

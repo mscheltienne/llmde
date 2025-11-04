@@ -8,16 +8,22 @@
           "type": "string",
           "enum": ["completed", "ongoing", "unclear"]
         },
-        "page": {
-          "type": "integer",
-          "nullable": true
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
         },
-        "quote": {
-          "type": "string",
-          "nullable": true
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
         }
       },
-      "required": ["value", "page", "quote"]
+      "required": ["value", "pages", "quotes"]
     },
     "countries": {
       "type": "object",
@@ -29,16 +35,22 @@
           },
           "minItems": 1
         },
-        "page": {
-          "type": "integer",
-          "nullable": true
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
         },
-        "quote": {
-          "type": "string",
-          "nullable": true
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
         }
       },
-      "required": ["value", "page", "quote"]
+      "required": ["value", "pages", "quotes"]
     },
     "arms": {
       "type": "array",
@@ -52,16 +64,22 @@
             "type": "string",
             "enum": ["experimental", "active_control", "waitlist", "passive_control"]
           },
-          "page": {
-            "type": "integer",
-            "nullable": true
+          "pages": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 1
           },
-          "quote": {
-            "type": "string",
-            "nullable": true
+          "quotes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
           }
         },
-        "required": ["name", "category", "page", "quote"]
+        "required": ["name", "category", "pages", "quotes"]
       },
       "minItems": 1
     },
@@ -88,16 +106,22 @@
         "unit": {
           "type": "string"
         },
-        "page": {
-          "type": "integer",
-          "nullable": true
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
         },
-        "quote": {
-          "type": "string",
-          "nullable": true
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
         }
       },
-      "required": ["mean", "sd", "range", "unit", "page", "quote"]
+      "required": ["mean", "sd", "range", "unit", "pages", "quotes"]
     }
   },
   "required": ["completion_status", "countries", "arms", "age"]

@@ -15,6 +15,8 @@ You must extract the following elements from the document:
 
 ## Where to Find This Information
 
+**Important**: The locations listed below are **typical** places where information appears. However, you must **read carefully and thoroughly through the entire document** to ensure you locate all required information, as it may appear in unexpected sections or across multiple pages.
+
 ### Study Completion Status
 - **Typical locations**: Title, abstract, discussion/conclusion sections
 - **Key indicators**: Protocol papers, "will be conducted", past tense vs. future tense
@@ -85,13 +87,13 @@ For each study arm/group/condition, extract:
 
 ```
 Introduction: "Participants in exercise with VR were expected to report higher level of enjoyment than those who engagement in traditional exercises"
-→ Arm 1: name="exercise with VR", category=experimental
-→ Arm 2: name="traditional exercises", category=active_control
+→ 1. name="exercise with VR", category=experimental
+→ 2. name="traditional exercises", category=active_control
 
 Methods: "Participants were randomized to one of three cohorts: a BOXVR group, a guided video group, or a nonintervention control group (n = 14)"
-→ Arm 1: name="BOXVR group", category=experimental
-→ Arm 2: name="guided video group", category=active_control
-→ Arm 3: name="nonintervention control group", category=passive_control
+→ 1. name="BOXVR group", category=experimental
+→ 2. name="guided video group", category=active_control
+→ 3. name="nonintervention control group", category=passive_control
 ```
 
 ### 4. Participant Age
@@ -128,12 +130,17 @@ Methods: "Adult participants (M = 34.2, SD = 8.1, range: 21-58 years)"
 
 ## Source Citation Requirements
 
-For each piece of information you extract, you must provide:
+For each piece of information you extract, you must provide **exhaustive and thorough citations**:
 
-1. **Page number**: The page where the information was found
-2. **Quote**: A direct quote showing where the information appears (when applicable)
+1. **Page numbers**: A list of **ALL** page numbers where information supporting your extraction was found
+2. **Quotes**: A list of **ALL** direct quotes from the document that you used to build the extracted information
 
-**Note**: For **completion_status** and **age** values that are aggregated from multiple pieces of information, provide the most relevant supporting quote.
+**Critical Requirements**:
+- **Be exhaustive**: Include every single quote and page that contributed to your answer
+- **One-to-one correspondence**: The number of quotes must exactly match the number of pages
+- **Direct quotes only**: Copy text exactly as it appears in the document
+- **No omissions**: Even if information seems obvious or redundant, include all supporting evidence
+- **For aggregated values**: Include ALL quotes used, not just the most relevant one
 
 ## Output Format
 
@@ -143,20 +150,20 @@ Return your response as a JSON object with the following structure:
 {
   "completion_status": {
     "value": "completed" | "ongoing" | "unclear",
-    "page": page_number or null,
-    "quote": "Exact text from document" or null
+    "pages": [page_number, ...],
+    "quotes": ["Exact text from document", ...]
   },
   "countries": {
     "value": ["Country Name", ...],
-    "page": page_number or null,
-    "quote": "Exact text from document" or null
+    "pages": [page_number, ...],
+    "quotes": ["Exact text from document", ...]
   },
   "arms": [
     {
       "name": "Arm name as stated by authors",
       "category": "experimental" | "active_control" | "waitlist" | "passive_control",
-      "page": page_number or null,
-      "quote": "Exact text from document" or null
+      "pages": [page_number, ...],
+      "quotes": ["Exact text from document", ...]
     },
     ...
   ],
@@ -165,11 +172,15 @@ Return your response as a JSON object with the following structure:
     "sd": number or null,
     "range": [min or null, max or null],
     "unit": "years",
-    "page": page_number or null,
-    "quote": "Exact text from document" or null
+    "pages": [page_number, ...],
+    "quotes": ["Exact text from document", ...]
   }
 }
 ```
+
+**Important**:
+- Each field must have matching lengths for `pages` and `quotes` arrays
+- Include all supporting evidence, even if the same information appears multiple times
 
 ### Example Output
 
@@ -177,26 +188,37 @@ Return your response as a JSON object with the following structure:
 {
   "completion_status": {
     "value": "completed",
-    "page": 1,
-    "quote": "We conducted a randomized controlled trial to examine..."
+    "pages": [1, 8],
+    "quotes": [
+      "We conducted a randomized controlled trial to examine...",
+      "Results showed significant improvements in the intervention group"
+    ]
   },
   "countries": {
     "value": ["United States", "Canada"],
-    "page": 3,
-    "quote": "The study was conducted at five sites across the United States and Canada"
+    "pages": [3, 3],
+    "quotes": [
+      "The study was conducted at five sites across the United States and Canada",
+      "Recruitment occurred at sites in Seattle, WA and Vancouver, BC"
+    ]
   },
   "arms": [
     {
       "name": "SPARX game intervention",
       "category": "experimental",
-      "page": 4,
-      "quote": "Participants randomized to the SPARX game intervention completed seven modules"
+      "pages": [4, 5],
+      "quotes": [
+        "Participants randomized to the SPARX game intervention completed seven modules",
+        "The SPARX group received weekly gaming sessions"
+      ]
     },
     {
       "name": "treatment as usual",
       "category": "active_control",
-      "page": 4,
-      "quote": "The control group received treatment as usual from their primary care provider"
+      "pages": [4],
+      "quotes": [
+        "The control group received treatment as usual from their primary care provider"
+      ]
     }
   ],
   "age": {
@@ -204,8 +226,11 @@ Return your response as a JSON object with the following structure:
     "sd": 1.8,
     "range": [12, 17],
     "unit": "years",
-    "page": 5,
-    "quote": "Participants aged 12-17 years (M = 14.5, SD = 1.8)"
+    "pages": [1, 5],
+    "quotes": [
+      "adolescents aged 12-17 years",
+      "Participants aged 12-17 years (M = 14.5, SD = 1.8)"
+    ]
   }
 }
 ```

@@ -16,11 +16,16 @@ You must extract the following elements from the document:
 
 ## Where to Find This Information
 
-All required information is typically located on the **first page** of the article, specifically:
-- In the article header or title section
-- In the author byline (immediately below the title)
-- In the citation information (footer or header of the first page)
-- In the article metadata section
+While bibliographic information is **typically located on the first page** of the article (in the header, title section, author byline, citation information, or metadata section), you must **read carefully and thoroughly through the entire document** to locate all required information.
+
+**Important**: Do not limit your search to the first page. Information may appear on:
+- Later pages (e.g., running headers, footers)
+- Copyright or publication information pages
+- Cover pages or title pages in preprints
+- Author information sections
+- Supplementary material headers
+
+Read the complete document systematically to ensure you find all bibliographic elements, even if they appear in unexpected locations.
 
 ## Author Name Format
 
@@ -53,17 +58,26 @@ Extracted: ["Yatziv, S-L", "Pedrelli, P", "Baror, S", "DeCaro, SA", "Shachar, N"
 
 ## Source Citation Requirements
 
-For each piece of information you extract, you must provide:
+For each piece of information you extract, you must provide **exhaustive and thorough citations**:
 
-1. **Page number**: The page number where the information was found (e.g., 1, 2, 3)
-2. **Quote**: A direct quote from the document showing where the information appears (when applicable)
+1. **Page numbers**: A list of **ALL** page numbers where information supporting your extraction was found
+2. **Quotes**: A list of **ALL** direct quotes from the document that you used to build the extracted information
 
-**Note**: For **title**, **authors**, and **year**, quotes are typically not necessary as these are obvious from the article header. However, for **journal** and **DOI**, provide the exact text where you found this information.
+**Critical Requirements**:
+- **Be exhaustive**: Include every single quote and page that contributed to your answer
+- **One-to-one correspondence**: The number of quotes must exactly match the number of pages
+- **Direct quotes only**: Copy text exactly as it appears in the document
+- **No omissions**: Even if information seems obvious or redundant, include all supporting evidence
 
 ### Example Source Citations
 
-- For journal: `"Journal of Affective Disorders"` (found on page 1)
-- For DOI: `"https://doi.org/10.1016/j.jad.2016.05.002"` (found on page 1)
+- For journal found in multiple locations:
+  - Pages: `[1, 2]`
+  - Quotes: `["Journal of Affective Disorders 191 (2016) 153–158", "J Affect Disord. 2016"]`
+
+- For DOI found once:
+  - Pages: `[1]`
+  - Quotes: `["https://doi.org/10.1016/j.jad.2016.05.002"]`
 
 ## Output Format
 
@@ -71,38 +85,67 @@ Return your response as a JSON object with the following structure:
 
 ```json
 {
-  "title": "Complete article title as it appears in the document",
-  "authors": ["LastName, Initials", "LastName, Initials", ...],
-  "year": YYYY,
+  "title": {
+    "value": "Complete article title as it appears in the document",
+    "pages": [page_number, ...],
+    "quotes": ["Exact text from document", ...]
+  },
+  "authors": {
+    "value": ["LastName, Initials", "LastName, Initials", ...],
+    "pages": [page_number, ...],
+    "quotes": ["Exact text from document", ...]
+  },
+  "year": {
+    "value": YYYY,
+    "pages": [page_number, ...],
+    "quotes": ["Exact text from document", ...]
+  },
   "journal": {
     "value": "Journal Name" or null,
-    "page": page_number or null,
-    "quote": "Exact text from document" or null
+    "pages": [page_number, ...] or null,
+    "quotes": ["Exact text from document", ...] or null
   },
   "doi": {
     "value": "DOI identifier" or null,
-    "page": page_number or null,
-    "quote": "Exact text from document" or null
+    "pages": [page_number, ...] or null,
+    "quotes": ["Exact text from document", ...] or null
   }
 }
 ```
+
+**Important**:
+- Each field must have matching lengths for `pages` and `quotes` arrays
+- Use `null` for the entire field structure if information is not found in the document
+- Include all supporting evidence, even if the same information appears multiple times
 
 ### Example Output
 
 ```json
 {
-  "title": "Effects of a video game intervention on symptoms, training motivation, and visuo-spatial memory in depression",
-  "authors": ["Scholten, H", "Malmberg, M", "Lobel, A", "Engels, RCME", "Granic, I"],
-  "year": 2016,
+  "title": {
+    "value": "Effects of a video game intervention on symptoms, training motivation, and visuo-spatial memory in depression",
+    "pages": [1],
+    "quotes": ["Effects of a video game intervention on symptoms, training motivation, and visuo-spatial memory in depression"]
+  },
+  "authors": {
+    "value": ["Scholten, H", "Malmberg, M", "Lobel, A", "Engels, RCME", "Granic, I"],
+    "pages": [1],
+    "quotes": ["Hanneke Scholten1*, Monique Malmberg1, Adam Lobel1, Rutger C. M. E. Engels1,2, Isabela Granic1"]
+  },
+  "year": {
+    "value": 2016,
+    "pages": [1],
+    "quotes": ["Journal of Affective Disorders 191 (2016) 153–158"]
+  },
   "journal": {
     "value": "Journal of Affective Disorders",
-    "page": 1,
-    "quote": "Journal of Affective Disorders 191 (2016) 153–158"
+    "pages": [1, 2],
+    "quotes": ["Journal of Affective Disorders 191 (2016) 153–158", "J Affect Disord."]
   },
   "doi": {
     "value": "10.1016/j.jad.2016.05.002",
-    "page": 1,
-    "quote": "https://doi.org/10.1016/j.jad.2016.05.002"
+    "pages": [1],
+    "quotes": ["https://doi.org/10.1016/j.jad.2016.05.002"]
   }
 }
 ```
