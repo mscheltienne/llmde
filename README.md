@@ -143,84 +143,163 @@ response = model.query(
 
 ## Command Line Interface
 
-LLMDE provides a CLI for batch processing PDF files with multiple prompts.
+LLMDE provides two CLI commands: `prompt` for single queries and `run` for batch processing.
 
-### Basic Usage
+### API Key Configuration
+
+Both `llmde prompt` and `llmde run` commands support two methods for providing API keys:
+
+1. **Command line argument**: Use `--api-key "your-api-key"` with any command
+2. **Environment variable**: Set the appropriate environment variable for your model:
+   - For Claude models: `LLMDE_CLAUDE_API_KEY`
+   - For Gemini models: `LLMDE_GEMINI_API_KEY`
+
+**Example:**
+
+```bash
+# On Linux/macOS
+export LLMDE_CLAUDE_API_KEY="sk-ant-api03-..."
+
+# On Windows (PowerShell)
+$env:LLMDE_CLAUDE_API_KEY="sk-ant-api03-..."
+
+# On Windows (CMD)
+set LLMDE_CLAUDE_API_KEY=sk-ant-api03-...
+
+# Then run commands without --api-key
+llmde prompt --model claude-sonnet-4-5-20250929 --prompt study_identifier --file paper.pdf
+llmde run --src datasets --out results --model claude-sonnet-4-5-20250929 --prompts study_identifier
+```
+
+### Single Query: `llmde prompt`
+
+Query a model with a prompt and files, returning the raw response.
+
+#### Basic Usage
+
+```bash
+llmde prompt \
+  --model <model_name> \
+  --prompt <prompt_name> \
+  --file <file1> [--file <file2> ...] \
+  [--system-instruction <instruction_name>] \
+  [--api-key <api_key>] \
+  [--temperature <value>] \
+  [--max-tokens <value>] \
+  [--output <output_file>]
+```
+
+#### Required Arguments
+
+- `--model`: Model to use (e.g., `claude-sonnet-4-5-20250929`, `gemini-2.0-flash`)
+- `--prompt`: Prompt to use (built-in name or file path)
+- `--file`: File to upload (can be specified multiple times)
+
+#### Optional Arguments
+
+- `--system-instruction`: System instruction (built-in name or file path)
+- `--api-key`: API key for the model (if not provided, reads from environment variable)
+- `--temperature`: Model temperature, 0.0 to 1.0 (default: 0.0 for deterministic output)
+- `--max-tokens`: Maximum tokens to generate (default: 8192)
+- `--output`: Save response to file (if not provided, prints to stdout)
+
+#### Examples
+
+**Query with single PDF, print to stdout:**
+
+```bash
+llmde prompt \
+  --model claude-sonnet-4-5-20250929 \
+  --prompt study_identifier \
+  --file paper.pdf
+```
+
+**Query with multiple PDFs, save to file:**
+
+```bash
+llmde prompt \
+  --model claude-sonnet-4-5-20250929 \
+  --prompt intervention_protocol \
+  --file paper1.pdf --file paper2.pdf \
+  --system-instruction systematic_review \
+  --output results.txt
+```
+
+**Use custom prompt file:**
+
+```bash
+llmde prompt \
+  --model gemini-2.0-flash \
+  --prompt my_custom_prompt.md \
+  --file paper.pdf \
+  --output analysis.txt
+```
+
+#### Important Notes
+
+- The `prompt` command returns the **raw response** from the model without any formatting
+- No assumptions are made about JSON structure or output format
+- This is ideal for exploratory queries, non-structured outputs, or custom use cases
+
+### Batch Processing: `llmde run`
+
+Process multiple PDF files with multiple prompts for structured data extraction.
+
+#### Basic Usage
 
 ```bash
 llmde run \
   --src <source_directory> \
   --out <output_directory> \
   --model <model_name> \
-  --prompt <prompt_names> \
+  --prompts <prompt_names> \
   [--system-instruction <instruction_name>] \
   [--api-key <api_key>] \
   [--temperature <value>] \
   [--max-tokens <value>]
 ```
 
-### Required Arguments
+#### Required Arguments
 
 - `--src`: Source directory containing PDF files to analyze
 - `--out`: Output directory for extraction results
 - `--model`: Model to use (e.g., `claude-sonnet-4-5-20250929`, `gemini-2.0-flash`)
-- `--prompt`: Comma-separated list of prompts (built-in names or file paths)
+- `--prompts`: Comma-separated list of prompts (built-in names or file paths)
 
-### Optional Arguments
+#### Optional Arguments
 
 - `--system-instruction`: System instruction (built-in name or file path)
 - `--api-key`: API key for the model (if not provided, reads from environment variable)
 - `--temperature`: Model temperature, 0.0 to 1.0 (default: 0.0 for deterministic output)
 - `--max-tokens`: Maximum tokens to generate (default: 8192)
 
-### API Key Configuration
+#### Examples
 
-You can provide the API key in two ways:
-
-1. **Command line argument**: `--api-key "your-api-key"`
-2. **Environment variable**: Set `LLMDE_CLAUDE_API_KEY` or `LLMDE_GEMINI_API_KEY`
-
-### Examples
-
-#### Process PDFs with multiple prompts using Claude
+**Process PDFs with multiple prompts using Claude:**
 
 ```bash
 llmde run \
   --src datasets \
   --out results \
   --model claude-sonnet-4-5-20250929 \
-  --prompt study_identifier,study_information,intervention_protocol,outcome_assessment \
+  --prompts study_identifier,study_information,intervention_protocol,outcome_assessment \
   --system-instruction systematic_review \
   --temperature 0.0 \
   --max-tokens 8192
 ```
 
-#### Using environment variable for API key
-
-```bash
-# Set environment variable
-export LLMDE_CLAUDE_API_KEY="your-api-key-here"
-
-# Run extraction
-llmde run \
-  --src datasets \
-  --out results \
-  --model claude-sonnet-4-5-20250929 \
-  --prompt study_identifier,study_information
-```
-
-#### Using custom prompts
+**Using custom prompts:**
 
 ```bash
 llmde run \
   --src datasets \
   --out results \
   --model gemini-2.0-flash \
-  --prompt my_prompt.md,another_prompt.md \
+  --prompts my_prompt.md,another_prompt.md \
   --system-instruction my_system.md
 ```
 
-### Output Structure
+#### Output Structure
 
 The CLI creates the following output structure:
 
@@ -245,7 +324,7 @@ index,pdf_name
 ...
 ```
 
-### Resume Capability
+#### Resume Capability
 
 The CLI automatically skips already-processed files. If a JSON output file already
 exists for a given PDF and prompt combination, it will not be re-extracted. This allows

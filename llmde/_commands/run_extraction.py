@@ -2,102 +2,18 @@ from __future__ import annotations
 
 import csv
 import json
-import os
 import shutil
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import click
 
-from ..io import read_markdown
-from ..models import ClaudeModel, GeminiModel
-from ..prompts import (
-    get_prompt,
-    get_system_instruction,
-    list_prompt_files,
-    list_system_instruction,
+from ..models import GeminiModel
+from ._utils import (
+    get_api_key,
+    get_model_class,
+    get_prompt_path,
+    get_system_instruction_text,
 )
-from ..utils._checks import ensure_path
-
-if TYPE_CHECKING:
-    from ..models._base import BaseModel
-
-# Model name patterns and their corresponding classes
-MODEL_MAPPING = {
-    "claude": ClaudeModel,  # Matches any claude-*
-    "gemini": GeminiModel,  # Matches any gemini-*
-}
-
-
-def _get_model_class(model_name: str) -> type[BaseModel]:
-    """Determine the model class from model name.
-
-    Parameters
-    ----------
-    model_name : str
-        Name of the model (e.g., "claude-sonnet-4-5-20250929").
-
-    Returns
-    -------
-    type[BaseModel]
-        Model class to use.
-
-    Raises
-    ------
-    ValueError
-        If model name doesn't match any known pattern.
-    """
-    model_lower = model_name.lower()
-    for pattern, model_class in MODEL_MAPPING.items():
-        if model_lower.startswith(pattern):
-            return model_class
-
-    raise ValueError(
-        f"Unknown model: {model_name}. "
-        f"Expected model name starting with: {list(MODEL_MAPPING.keys())}"
-    )
-
-
-def get_api_key(model_name: str, api_key: str | None) -> str:
-    """Get API key from argument or environment variable.
-
-    Parameters
-    ----------
-    model_name : str
-        Name of the model.
-    api_key : str | None
-        API key from command line argument (or None).
-
-    Returns
-    -------
-    str
-        API key to use.
-
-    Raises
-    ------
-    ValueError
-        If no API key provided and not found in environment.
-    """
-    if api_key is not None:
-        return api_key
-
-    # Determine environment variable name based on model
-    model_lower = model_name.lower()
-    if model_lower.startswith("claude"):
-        env_var = "LLMDE_CLAUDE_API_KEY"
-    elif model_lower.startswith("gemini"):
-        env_var = "LLMDE_GEMINI_API_KEY"
-    else:
-        raise ValueError(f"Unknown model type for API key lookup: {model_name}")
-
-    api_key_from_env = os.getenv(env_var)
-    if api_key_from_env is None:
-        raise ValueError(
-            f"API key not provided and environment variable {env_var} not set. "
-            f"Either provide --api-key or set {env_var}."
-        )
-
-    return api_key_from_env
 
 
 def _parse_prompts(prompts_str: str) -> list[tuple[Path, Path | None]]:
@@ -119,52 +35,12 @@ def _parse_prompts(prompts_str: str) -> list[tuple[Path, Path | None]]:
         If a prompt name is not found in built-in prompts.
     """
     prompt_data = []
-    built_in_prompts = list_prompt_files()
 
     for prompt_name in [prompt.strip() for prompt in prompts_str.split(",")]:
-        # Check if it's a built-in prompt
-        if prompt_name in built_in_prompts:
-            prompt_path, json_schema_path = get_prompt(prompt_name)
-        else:
-            # Assume it's a file path - validate and ensure it exists
-            prompt_path = ensure_path(prompt_name, must_exist=True)
-            # Check for corresponding JSON schema
-            json_schema_path = prompt_path.with_suffix(".json")
-            json_schema_path = json_schema_path if json_schema_path.exists() else None
+        prompt_path, json_schema_path = get_prompt_path(prompt_name)
         prompt_data.append((prompt_path, json_schema_path))
 
     return prompt_data
-
-
-def _get_system_instruction_path(system_instruction: str | None) -> str | None:
-    """Get system instruction content from name or path.
-
-    Parameters
-    ----------
-    system_instruction : str | None
-        Built-in name or file path (or None to skip).
-
-    Returns
-    -------
-    str | None
-        System instruction text content (or None if skipped).
-
-    Raises
-    ------
-    ValueError
-        If system instruction not found.
-    """
-    if system_instruction is None:
-        return None
-
-    built_in_systems = list_system_instruction()
-    if system_instruction in built_in_systems:
-        # Try as built-in first
-        system_path = get_system_instruction(system_instruction)
-    else:
-        # Try as file path - validate and ensure it exists
-        system_path = ensure_path(system_instruction, must_exist=True)
-    return read_markdown(system_path)
 
 
 def _strip_markdown_fences(response: str) -> str:
@@ -215,7 +91,7 @@ def _strip_markdown_fences(response: str) -> str:
     help="Model to use (e.g., 'claude-sonnet-4-5-20250929', 'gemini-2.0-flash').",
 )
 @click.option(
-    "--prompt",
+    "--prompts",
     "prompts",
     required=True,
     type=str,
@@ -275,7 +151,7 @@ def run(
     system_text = None
     if system_instruction is not None:
         click.echo(f"\nLoading system instruction: {system_instruction}")
-        system_text = _get_system_instruction_path(system_instruction)
+        system_text = get_system_instruction_text(system_instruction)
         click.echo("  ✓ Loaded")
 
     # Get API key
@@ -285,7 +161,7 @@ def run(
 
     # Initialize model
     click.echo(f"\nInitializing model: {model}")
-    model_class = _get_model_class(model)
+    model_class = get_model_class(model)
 
     # Build model kwargs
     model_kwargs = {
