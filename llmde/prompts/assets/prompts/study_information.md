@@ -11,7 +11,7 @@ You must extract the following elements from the document:
 1. **Study Completion Status**: Whether the study is completed, ongoing, or unclear
 2. **Country of Study**: The country or countries where the study was conducted
 3. **Study Conditions/Arms**: All experimental groups and their classification
-4. **Participant Age**: Mean age, standard deviation, range, and unit
+4. **Participant Age**: Mean or median age, standard deviation, range, and unit
 
 ## Where to Find This Information
 
@@ -31,7 +31,7 @@ You must extract the following elements from the document:
 
 ### Participant Age
 - **Typical locations**: Methods (participants section), results (baseline characteristics), abstract
-- **Key indicators**: "mean age", "aged between", "age range", demographic tables
+- **Key indicators**: "mean age", "median age", "aged between", "age range", demographic tables
 
 ## Detailed Field Definitions
 
@@ -106,22 +106,28 @@ Methods: "Participants were randomized to one of three cohorts: a BOXVR group, a
 
 Extract all available age information:
 
-- **Mean age**: Average age of participants (if reported)
-- **Standard deviation**: SD of age (if reported)
+- **Value**: The central tendency value (mean OR median) of participants' ages (if reported)
+- **Type**: Whether the value is a "mean" or "median" (if reported)
+- **Standard deviation**: SD of age (if reported - typically only with mean)
 - **Age range**: Minimum and maximum ages (if reported)
 - **Unit**: Typically "years"
+
+**Important**: Always extract BOTH the numeric value AND the type of statistic (mean vs median). If only a range is given without mean/median, set value and type to null.
 
 **Examples:**
 
 ```
 Methods: "Participants between the ages 10 and 15"
-→ age_mean: null, age_sd: null, age_range: [10, 15], unit: "years"
+→ value: null, type: null, sd: null, range: [10, 15], unit: "years"
 
 Results: "The mean age was 15.5 years (SD = 2.3)"
-→ age_mean: 15.5, age_sd: 2.3, age_range: [null, null], unit: "years"
+→ value: 15.5, type: "mean", sd: 2.3, range: [null, null], unit: "years"
+
+Methods: "The median age was 34 years (range: 21-58)"
+→ value: 34, type: "median", sd: null, range: [21, 58], unit: "years"
 
 Methods: "Adult participants (M = 34.2, SD = 8.1, range: 21-58 years)"
-→ age_mean: 34.2, age_sd: 8.1, age_range: [21, 58], unit: "years"
+→ value: 34.2, type: "mean", sd: 8.1, range: [21, 58], unit: "years"
 ```
 
 ## Important Instructions
@@ -174,7 +180,8 @@ Return your response as a JSON object with the following structure:
     ...
   ],
   "age": {
-    "mean": number or null,
+    "value": number or null,
+    "type": "mean" | "median" | null,
     "sd": number or null,
     "range": [min or null, max or null],
     "unit": "years",
@@ -228,7 +235,8 @@ Return your response as a JSON object with the following structure:
     }
   ],
   "age": {
-    "mean": 14.5,
+    "value": 14.5,
+    "type": "mean",
     "sd": 1.8,
     "range": [12, 17],
     "unit": "years",

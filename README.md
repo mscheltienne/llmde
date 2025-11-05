@@ -109,7 +109,7 @@ model = ClaudeModel(
     api_key=api_key,
     temperature=0.0,
     max_tokens=4096,
-    # system=system_instruction,  # Optional
+    # system_instruction=system_instruction,  # Optional
 )
 
 # Query with PDF files

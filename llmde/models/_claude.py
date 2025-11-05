@@ -19,7 +19,7 @@ class ClaudeModel(BaseModel):
         model_name: str,
         api_key: str,
         *,
-        system: str | None = None,
+        system_instruction: str | None = None,
         temperature: float | None = None,
         max_tokens: int = 4096,
     ) -> None:
@@ -32,8 +32,8 @@ class ClaudeModel(BaseModel):
             ``"claude-sonnet-4-5-20250929"`` for specific versions).
         api_key : str
             The API key for accessing the Claude API.
-        system : str | None
-            System prompt to provide context and instructions to the model.
+        system_instruction : str | None
+            System instruction to provide context and instructions to the model.
         temperature : float | None
             Amount of randomness in the response. Ranges from ``0.0`` to ``1.0``.
             Use lower values (e.g., ``0.0``) for more deterministic, focused outputs,
@@ -57,7 +57,7 @@ class ClaudeModel(BaseModel):
         check_type(api_key, (str,), "api_key")
         self._client = Anthropic(api_key=api_key)
         self._model_name = model_name
-        check_type(system, (str, None), "system")
+        check_type(system_instruction, (str, None), "system_instruction")
         check_type(temperature, ("numeric", None), "temperature")
         if temperature is not None and (temperature < 0.0 or temperature > 1.0):
             raise ValueError(
@@ -65,7 +65,7 @@ class ClaudeModel(BaseModel):
                 "invalid."
             )
         check_type(max_tokens, ("int-like",), "max_tokens")
-        self._system = system
+        self._system_instruction = system_instruction
         self._temperature = temperature
         self._max_tokens = max_tokens
 
@@ -121,8 +121,8 @@ class ClaudeModel(BaseModel):
             "messages": [{"role": "user", "content": message_content}],
         }
 
-        if self._system is not None:
-            kwargs["system"] = self._system
+        if self._system_instruction is not None:
+            kwargs["system"] = self._system_instruction
         if self._temperature is not None:
             kwargs["temperature"] = self._temperature
 

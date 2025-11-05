@@ -86,8 +86,13 @@
     "age": {
       "type": "object",
       "properties": {
-        "mean": {
+        "value": {
           "type": "number",
+          "nullable": true
+        },
+        "type": {
+          "type": "string",
+          "enum": ["mean", "median"],
           "nullable": true
         },
         "sd": {
@@ -121,7 +126,7 @@
           "minItems": 1
         }
       },
-      "required": ["mean", "sd", "range", "unit", "pages", "quotes"]
+      "required": ["value", "type", "sd", "range", "unit", "pages", "quotes"]
     }
   },
   "required": ["completion_status", "countries", "arms", "age"]
