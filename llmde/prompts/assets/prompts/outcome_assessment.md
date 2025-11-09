@@ -43,7 +43,7 @@ You must extract the following elements from the document:
 - If study has one primary outcome (anxiety OR depression): return that single outcome
 - If study has co-primary outcomes (anxiety AND depression): return both
 - If study targets both but one is primary and one is secondary: return only the primary
-- If study has neither anxiety nor depression as outcomes: this should not occur in the dataset, but note in extraction
+- If study has neither anxiety nor depression as outcomes, which should not occur in the dataset, use `null` as value
 
 **Examples:**
 
@@ -59,6 +59,9 @@ Methods: "The primary outcome will be self-reported depression severity"
 
 Abstract: "Primary outcome: anxiety symptoms. Secondary outcomes: depression, quality of life."
 → value: [{"category": "anxiety"}]
+
+Methods: "The primary outcome was quality of life improvement."
+→ value: null (neither anxiety nor depression targeted)
 ```
 
 ### 2. Assessment Instruments
@@ -113,6 +116,7 @@ Methods: "Co-primary outcomes were HADS-Anxiety and HADS-Depression subscales."
 6. **Extract exactly what you see**: Do not infer instruments or outcomes not explicitly stated
 7. **One instrument per construct**: If multiple instruments measure the same construct, only include the one(s) designated as primary
 8. **Check multiple sections**: Primary outcome designation may appear in different sections (Objectives, Outcomes, Statistical Analysis, Trial Registration)
+9. **Use null for non-relevant studies**: If the study does not target anxiety or depression as primary outcomes, use `null` for outcome_targeted value
 
 ## Source Citation Requirements
 
@@ -138,7 +142,7 @@ Return your response as a JSON object with the following structure:
     "value": [
       {"category": "anxiety" | "depression"},
       ...
-    ],
+    ] or null,
     "pages": [page_number, ...],
     "quotes": ["Exact text from document", ...]
   },
@@ -149,7 +153,7 @@ Return your response as a JSON object with the following structure:
         "category": "anxiety" | "depression"
       },
       ...
-    ],
+    ] or [],
     "pages": [page_number, ...],
     "quotes": ["Exact text from document", ...]
   }
@@ -159,8 +163,8 @@ Return your response as a JSON object with the following structure:
 **Important**:
 - Each field must have matching lengths for `pages` and `quotes` arrays
 - Include all supporting evidence, even if the same information appears multiple times
-- For outcome_targeted: value array length determines if one or both outcomes targeted
-- For assessment_instruments: value array contains one object per primary instrument
+- For outcome_targeted: value can be an array with 1-2 category objects, or `null` if neither anxiety nor depression is targeted
+- For assessment_instruments: value array contains one object per primary instrument, or `[]` if outcome_targeted is null
 
 ### Example Output
 
@@ -254,6 +258,25 @@ Return your response as a JSON object with the following structure:
       "Anxiety was measured using the State-Trait Anxiety Inventory (STAI; primary outcome) and the Revised Children's Anxiety and Depression Scale (RCADS; secondary)",
       "The primary endpoint analysis examined change in STAI-State scores"
     ]
+  }
+}
+```
+
+**Example 4: Study without anxiety or depression outcomes**
+
+```json
+{
+  "outcome_targeted": {
+    "value": null,
+    "pages": [3],
+    "quotes": [
+      "The primary outcome was quality of life measured with the SF-36"
+    ]
+  },
+  "assessment_instruments": {
+    "value": [],
+    "pages": [],
+    "quotes": []
   }
 }
 ```

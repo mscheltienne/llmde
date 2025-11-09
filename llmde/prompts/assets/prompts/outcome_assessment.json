@@ -5,19 +5,26 @@
       "type": "object",
       "properties": {
         "value": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "category": {
-                "type": "string",
-                "enum": ["anxiety", "depression"]
-              }
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": ["anxiety", "depression"]
+                  }
+                },
+                "required": ["category"]
+              },
+              "minItems": 1,
+              "maxItems": 2
             },
-            "required": ["category"]
-          },
-          "minItems": 1,
-          "maxItems": 2
+            {
+              "type": "null"
+            }
+          ]
         },
         "pages": {
           "type": "array",
@@ -54,21 +61,21 @@
             },
             "required": ["name", "category"]
           },
-          "minItems": 1
+          "minItems": 0
         },
         "pages": {
           "type": "array",
           "items": {
             "type": "integer"
           },
-          "minItems": 1
+          "minItems": 0
         },
         "quotes": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "minItems": 1
+          "minItems": 0
         }
       },
       "required": ["value", "pages", "quotes"]
