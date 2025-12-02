@@ -45,9 +45,9 @@ dependencies = [
 description = 'LLM-based data extraction from scientific papers.'
 dynamic = ["version"]
 keywords = [
-  'python',
-  'llm',
   'data extraction',
+  'llm',
+  'python',
   'scientific papers',
 ]
 license = {file = 'LICENSE'}
