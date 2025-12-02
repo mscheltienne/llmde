@@ -1,8 +1,8 @@
 name: publish
 on:  # yamllint disable-line rule:truthy
-  workflow_dispatch:  # remove in favor of release
-  # release:
-  #   types: [published]
+  workflow_dispatch:
+  release:
+    types: [published]
 
 env:
   UV_LOCKED: true
@@ -14,7 +14,8 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    environment: pypi
+    environment:
+      name: pypi
     steps:
       - uses: actions/checkout@v6
         with:
@@ -22,11 +23,9 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           activate-environment: true
-      - run: uv sync -q --no-default-groups
-      - run: llmde sys-info --developer
       - run: uv build
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/*
           tag_name: ${{ github.event.release.tag_name }}
-      - run: uv publish --trusted-publishing always --publish-url https://test.pypi.org/legacy/
+      - run: uv publish
