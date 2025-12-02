@@ -8,7 +8,6 @@ ide = [
   'ipython',
 ]
 style = [
-  'bibclean',
   'codespell[toml]>=2.2.4',
   'pre-commit',
   'ruff>=0.6.0',
@@ -85,14 +84,15 @@ branch = true
 cover_pylib = false
 omit = [
   '**/__init__.py',
-  '**/conftest.py',
   '**/llmde/_version.py',
   '**/llmde/utils/_fixes.py',
-  '**/tests/**',
 ]
 
 [tool.pytest.ini_options]
 addopts = ['--color=yes', '--cov-report=', '--durations=20', '--junit-xml=junit-results.xml', '--strict-config', '--tb=short', '-ra', '-v']
+filterwarnings = [
+  'error',
+]
 junit_family = 'xunit2'
 minversion = '8.0'
 
@@ -115,10 +115,7 @@ select = ['A', 'B', 'C4', 'D', 'E', 'F', 'G', 'I', 'LOG', 'NPY', 'PERF', 'PIE', 
   'D104',  # 'Missing docstring in public package'
   'D107',  # 'Missing docstring in __init__'
 ]
-'*.pyi' = ['E501']
 '__init__.py' = ['F401']
-'scripts/*' = ['D205', 'D400', 'T201']
-'tutorials/*' = ['D205', 'D400', 'T201']
 
 [tool.ruff.lint.pydocstyle]
 convention = 'numpy'
@@ -131,11 +128,11 @@ include-package-data = false
 'llmde' = ['prompts/assets/*']
 
 [tool.setuptools.packages.find]
-exclude = ['llmde*tests']
 include = ['llmde*']
+where = ['src']
 
 [tool.setuptools_scm]
-version_file = "llmde/_version.py"
+version_file = "src/llmde/_version.py"
 version_scheme = "release-branch-semver"
 
 [tool.tomlsort]

@@ -62,31 +62,6 @@ wheels = [
 ]
 
 [[package]]
-name = "bibclean"
-version = "0.8.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "bibtexparser" },
-    { name = "numpy" },
-    { name = "packaging" },
-    { name = "psutil" },
-    { name = "toml" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/4a/f7/4ddcf2cbb073a6aaac86d6227cc5e4ba85d92c738ba76bd6dc6238b44385/bibclean-0.8.0.tar.gz", hash = "sha256:96f983a661a9773e299bbbca4e2e858354e736528bbe3f46cb87b1d159acfa5f", size = 17474, upload-time = "2023-11-07T12:38:54.447Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ae/68/afba1f542e8bb86044b58feeb78f0360c63c11ef77709f0028aaee4a9eb8/bibclean-0.8.0-py3-none-any.whl", hash = "sha256:9f5e814aa90437fcfb196b54ffa336ffab20aef94cc5e20f428b4a3e6aaa08e1", size = 21610, upload-time = "2023-11-07T12:38:51.954Z" },
-]
-
-[[package]]
-name = "bibtexparser"
-version = "1.4.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pyparsing" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/82/60/e4315ce9801daa4c95d4ae66cc684a1780cc041ba3c4eab67265ab08a038/bibtexparser-1.4.0.tar.gz", hash = "sha256:ca7ce2bc34e7c48a678dd49416429bb567441f26dbb13b3609082d8cd109ace6", size = 51883, upload-time = "2022-09-23T12:42:39.173Z" }
-
-[[package]]
 name = "cachetools"
 version = "6.2.2"
 source = { registry = "https://pypi.org/simple" }
@@ -765,7 +740,6 @@ ide = [
     { name = "ipython" },
 ]
 style = [
-    { name = "bibclean" },
     { name = "codespell" },
     { name = "pre-commit" },
     { name = "ruff" },
@@ -795,7 +769,6 @@ ide = [
     { name = "ipython" },
 ]
 style = [
-    { name = "bibclean" },
     { name = "codespell", extras = ["toml"], specifier = ">=2.2.4" },
     { name = "pre-commit" },
     { name = "ruff", specifier = ">=0.6.0" },
@@ -1201,15 +1174,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pyparsing"
-version = "3.2.5"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f2/a5/181488fc2b9d093e3972d2a472855aae8a03f000592dbfce716a512b3359/pyparsing-3.2.5.tar.gz", hash = "sha256:2df8d5b7b2802ef88e8d016a2eb9c7aeaa923529cd251ed0fe4608275d4105b6", size = 1099274, upload-time = "2025-09-21T04:11:06.277Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/5e/1aa9a93198c6b64513c9d7752de7422c06402de6600a8767da1524f9570b/pyparsing-3.2.5-py3-none-any.whl", hash = "sha256:e38a4f02064cf41fe6593d328d0512495ad1f3d8a91c4f73fc401b3079a59a5e", size = 113890, upload-time = "2025-09-21T04:11:04.117Z" },
-]
-
-[[package]]
 name = "pytest"
 version = "9.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1480,15 +1444,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/0a/d4/2b0cd0fe285e14b36db076e78c93766ff1d529d70408bd1d2a5a84f1d929/tenacity-9.1.2.tar.gz", hash = "sha256:1169d376c297e7de388d18b4481760d478b0e99a777cad3a9c86e556f4b697cb", size = 48036, upload-time = "2025-04-02T08:25:09.966Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e5/30/643397144bfbfec6f6ef821f36f33e57d35946c44a2352d3c9f0ae847619/tenacity-9.1.2-py3-none-any.whl", hash = "sha256:f77bf36710d8b73a50b2dd155c97b870017ad21afe6ab300326b0371b3b05138", size = 28248, upload-time = "2025-04-02T08:25:07.678Z" },
-]
-
-[[package]]
-name = "toml"
-version = "0.10.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c/toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f", size = 22253, upload-time = "2020-11-01T01:40:22.204Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/44/6f/7120676b6d73228c96e17f1f794d8ab046fc910d781c8d151120c3f1569e/toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b", size = 16588, upload-time = "2020-11-01T01:40:20.672Z" },
 ]
 
 [[package]]
