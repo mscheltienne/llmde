@@ -24,7 +24,7 @@ class GeminiModel(BaseModel):
         temperature: float | None = None,
         top_p: float | None = None,
         top_k: int | None = None,
-        max_tokens: int = 4096,
+        max_tokens: int = 8192,
     ) -> None:
         """Initialize the Gemini model with the given model name and API key.
 
@@ -57,7 +57,7 @@ class GeminiModel(BaseModel):
             selecting the most probable token. Lower values reduce randomness. For
             maximum determinism, use ``top_k=1``.
         max_tokens : int
-            Maximum number of tokens to generate in the response. Defaults to ``4096``.
+            Maximum number of tokens to generate in the response. Defaults to ``8192``.
             Set this high enough to accommodate the expected JSON output size for data
             extraction tasks.
 

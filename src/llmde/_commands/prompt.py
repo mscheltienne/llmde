@@ -50,13 +50,29 @@ from ._utils import (
     "--temperature",
     type=float,
     default=0.0,
-    help="Model temperature (0.0 to 1.0). Default: 0.0 for deterministic output.",
+    help="Controls randomness in token selection (0.0 to 1.0). Use 0.0 for "
+    "deterministic data extraction. Default: 0.0.",
+)
+@click.option(
+    "--top-p",
+    type=float,
+    default=None,
+    help="Nucleus sampling threshold (0.0 to 1.0). Lower values restrict sampling to "
+    "higher-probability tokens. Leave unset when using temperature=0.0.",
+)
+@click.option(
+    "--top-k",
+    type=int,
+    default=None,
+    help="Restricts sampling to top K tokens. Use 1 for greedy decoding (maximum "
+    "determinism). Leave unset for API default.",
 )
 @click.option(
     "--max-tokens",
     type=int,
     default=8192,
-    help="Maximum tokens to generate. Default: 8192.",
+    help="Maximum tokens to generate. Set high enough for expected JSON output size. "
+    "Default: 8192.",
 )
 @click.option(
     "--output",
@@ -72,6 +88,8 @@ def run(
     system_instruction: str | None,
     api_key: str | None,
     temperature: float,
+    top_p: float | None,
+    top_k: int | None,
     max_tokens: int,
     output: Path | None,
 ) -> None:
@@ -120,6 +138,8 @@ def run(
         "api_key": api_key_value,
         "system_instruction": system_text,
         "temperature": temperature,
+        "top_p": top_p,
+        "top_k": top_k,
         "max_tokens": max_tokens,
     }
 

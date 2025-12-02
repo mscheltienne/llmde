@@ -185,6 +185,8 @@ llmde prompt \
   [--system-instruction <instruction_name>] \
   [--api-key <api_key>] \
   [--temperature <value>] \
+  [--top-p <value>] \
+  [--top-k <value>] \
   [--max-tokens <value>] \
   [--output <output_file>]
 ```
@@ -199,7 +201,9 @@ llmde prompt \
 
 - `--system-instruction`: System instruction (built-in name or file path)
 - `--api-key`: API key for the model (if not provided, reads from environment variable)
-- `--temperature`: Model temperature, 0.0 to 1.0 (default: 0.0 for deterministic output)
+- `--temperature`: Controls randomness in token selection, 0.0 to 1.0 (default: 0.0 for deterministic output)
+- `--top-p`: Nucleus sampling threshold, 0.0 to 1.0 (default: unset, use API default)
+- `--top-k`: Restricts sampling to top K tokens; use 1 for greedy decoding (default: unset)
 - `--max-tokens`: Maximum tokens to generate (default: 8192)
 - `--output`: Save response to file (if not provided, prints to stdout)
 
@@ -256,6 +260,8 @@ llmde run \
   [--system-instruction <instruction_name>] \
   [--api-key <api_key>] \
   [--temperature <value>] \
+  [--top-p <value>] \
+  [--top-k <value>] \
   [--max-tokens <value>]
 ```
 
@@ -270,7 +276,9 @@ llmde run \
 
 - `--system-instruction`: System instruction (built-in name or file path)
 - `--api-key`: API key for the model (if not provided, reads from environment variable)
-- `--temperature`: Model temperature, 0.0 to 1.0 (default: 0.0 for deterministic output)
+- `--temperature`: Controls randomness in token selection, 0.0 to 1.0 (default: 0.0 for deterministic output)
+- `--top-p`: Nucleus sampling threshold, 0.0 to 1.0 (default: unset, use API default)
+- `--top-k`: Restricts sampling to top K tokens; use 1 for greedy decoding (default: unset)
 - `--max-tokens`: Maximum tokens to generate (default: 8192)
 
 #### Examples
