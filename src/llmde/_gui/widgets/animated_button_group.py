@@ -30,9 +30,7 @@ class AnimatedButtonGroup(QWidget):
 
     selectionChanged = pyqtSignal(str)
 
-    def __init__(
-        self, button_labels: list[str], parent: QWidget | None = None
-    ) -> None:
+    def __init__(self, button_labels: list[str], parent: QWidget | None = None) -> None:
         super().__init__(parent)
         if len(button_labels) == 0:
             raise ValueError("button_labels must not be empty")
@@ -92,9 +90,7 @@ class AnimatedButtonGroup(QWidget):
             button = QPushButton(label)
             button.setCheckable(False)
             # Calculate button width based on text content with padding
-            button_width = max(
-                GUIConfig.MODEL_BUTTON_SIZE[0], len(label) * 10 + 40
-            )
+            button_width = max(GUIConfig.MODEL_BUTTON_SIZE[0], len(label) * 10 + 40)
             button.setFixedSize(button_width, GUIConfig.MODEL_BUTTON_SIZE[1])
             button.setProperty("class", "model-button")
             button.clicked.connect(lambda _, idx=i: self._on_button_clicked(idx))
@@ -157,9 +153,7 @@ class AnimatedButtonGroup(QWidget):
     def _apply_styles(self) -> None:
         """Apply current styles to all components."""
         for k, button in enumerate(self._buttons):
-            is_selected = (
-                self._selected_index is not None and k == self._selected_index
-            )
+            is_selected = self._selected_index is not None and k == self._selected_index
             button.setProperty(
                 "class",
                 "model-button-selected" if is_selected else "model-button",

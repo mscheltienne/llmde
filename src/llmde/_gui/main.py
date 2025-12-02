@@ -142,12 +142,8 @@ class MainWindow(QMainWindow):
     def _setup_ui(self) -> None:
         """Set up the user interface."""
         self.setWindowTitle(GUIConfig.WINDOW_TITLE)
-        self.setMinimumSize(
-            GUIConfig.WINDOW_MIN_WIDTH, GUIConfig.WINDOW_MIN_HEIGHT
-        )
-        self.resize(
-            GUIConfig.WINDOW_DEFAULT_WIDTH, GUIConfig.WINDOW_DEFAULT_HEIGHT
-        )
+        self.setMinimumSize(GUIConfig.WINDOW_MIN_WIDTH, GUIConfig.WINDOW_MIN_HEIGHT)
+        self.resize(GUIConfig.WINDOW_DEFAULT_WIDTH, GUIConfig.WINDOW_DEFAULT_HEIGHT)
 
         # Central widget
         central_widget = QWidget()

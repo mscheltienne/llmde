@@ -80,9 +80,7 @@ class LineNumberTextEdit(QPlainTextEdit):
         self.setFont(font)
 
         # Set tab width
-        self.setTabStopDistance(
-            self.fontMetrics().horizontalAdvance(" ") * 4
-        )
+        self.setTabStopDistance(self.fontMetrics().horizontalAdvance(" ") * 4)
 
     def line_number_area_width(self) -> int:
         """Calculate the width needed for the line number area.
@@ -155,9 +153,7 @@ class LineNumberTextEdit(QPlainTextEdit):
             selection = QTextEdit.ExtraSelection()
             line_color = QColor(GUIConfig.COLORS["bg_tertiary"])
             selection.format.setBackground(line_color)
-            selection.format.setProperty(
-                QTextFormat.Property.FullWidthSelection, True
-            )
+            selection.format.setProperty(QTextFormat.Property.FullWidthSelection, True)
             selection.cursor = self.textCursor()
             selection.cursor.clearSelection()
             extra_selections.append(selection)
@@ -220,8 +216,6 @@ class LineNumberTextEdit(QPlainTextEdit):
 
         # Update styling for read-only mode
         if read_only:
-            self.setStyleSheet(
-                f"background-color: {GUIConfig.COLORS['bg_tertiary']};"
-            )
+            self.setStyleSheet(f"background-color: {GUIConfig.COLORS['bg_tertiary']};")
         else:
             self.setStyleSheet("")

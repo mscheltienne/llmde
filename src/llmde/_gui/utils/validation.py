@@ -25,9 +25,7 @@ class ValidationField:
         Whether this field is required for form submission.
     """
 
-    def __init__(
-        self, name: str, icon_widget: QLabel, required: bool = True
-    ) -> None:
+    def __init__(self, name: str, icon_widget: QLabel, required: bool = True) -> None:
         self.name = name
         self.icon_widget = icon_widget
         self.required = required

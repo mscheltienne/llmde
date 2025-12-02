@@ -78,9 +78,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         self._highlighting_rules.append(
             (re.compile(r"\*\*[^*]+\*\*"), self._bold_format)
         )
-        self._highlighting_rules.append(
-            (re.compile(r"__[^_]+__"), self._bold_format)
-        )
+        self._highlighting_rules.append((re.compile(r"__[^_]+__"), self._bold_format))
 
         # Italic: *text* or _text_
         self._highlighting_rules.append(
@@ -91,9 +89,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         )
 
         # Inline code: `code`
-        self._highlighting_rules.append(
-            (re.compile(r"`[^`]+`"), self._code_format)
-        )
+        self._highlighting_rules.append((re.compile(r"`[^`]+`"), self._code_format))
 
         # Links: [text](url)
         self._highlighting_rules.append(
@@ -205,14 +201,10 @@ class JSONHighlighter(QSyntaxHighlighter):
         )
 
         # Null
-        self._highlighting_rules.append(
-            (re.compile(r"\bnull\b"), self._keyword_format)
-        )
+        self._highlighting_rules.append((re.compile(r"\bnull\b"), self._keyword_format))
 
         # Brackets and braces
-        self._highlighting_rules.append(
-            (re.compile(r"[\[\]{}]"), self._bracket_format)
-        )
+        self._highlighting_rules.append((re.compile(r"[\[\]{}]"), self._bracket_format))
 
     def highlightBlock(self, text: str) -> None:
         """Highlight a block of text.
