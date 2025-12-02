@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 
 from anthropic import Anthropic
 
-from ..io import read_markdown
-from ..utils._checks import check_type, ensure_path
 from ._base import BaseModel
 
 if TYPE_CHECKING:
@@ -21,6 +19,8 @@ class ClaudeModel(BaseModel):
         *,
         system_instruction: str | None = None,
         temperature: float | None = None,
+        top_p: float | None = None,
+        top_k: int | None = None,
         max_tokens: int = 4096,
     ) -> None:
         """Initialize the Claude model with the given model name and API key.
@@ -29,45 +29,76 @@ class ClaudeModel(BaseModel):
         ----------
         model_name : str
             The name of the Claude model to use (e.g., ``"claude-sonnet-4-5"`` or
-            ``"claude-sonnet-4-5-20250929"`` for specific versions).
+            ``"claude-sonnet-4-5-20250929"`` for a specific version).
         api_key : str
             The API key for accessing the Claude API.
         system_instruction : str | None
-            System instruction to provide context and instructions to the model.
+            System instruction to provide high-level context and behavioral guidance to
+            the model. For data extraction tasks, this can define the model's persona
+            (e.g., systematic review researcher) and establish extraction principles.
         temperature : float | None
-            Amount of randomness in the response. Ranges from ``0.0`` to ``1.0``.
-            Use lower values (e.g., ``0.0``) for more deterministic, focused outputs,
-            and higher values (e.g., ``1.0``) for more creative, diverse outputs.
+            Controls randomness in token selection during response generation. Ranges
+            from ``0.0`` to ``1.0``. Lower values produce more deterministic, focused
+            outputs by favoring high-probability tokens. Higher values (approaching
+            ``1.0``) increase diversity and creativity. For factual data extraction
+            where consistency and accuracy are paramount, use ``temperature=0.0``.
+        top_p : float | None
+            Nucleus sampling parameter. Tokens are selected from highest to lowest
+            probability until their cumulative probability reaches this threshold.
+            Ranges from ``0.0`` to ``1.0``. Lower values restrict sampling to
+            higher-probability tokens, reducing randomness. For deterministic outputs,
+            use a low value (e.g., ``0.0``) or leave as ``None`` to use the API default.
+        top_k : int | None
+            Restricts sampling to the ``top_k`` most probable tokens at each step.
+            Must be ``>= 1``. A value of ``1`` implements greedy decoding, always
+            selecting the most probable token. Lower values reduce randomness. For
+            maximum determinism, use ``top_k=1``.
         max_tokens : int
             Maximum number of tokens to generate in the response. This is a required
-            parameter for Claude API. Default is 4096.
+            parameter for Claude API. Defaults to ``4096``. Set this high enough to
+            accommodate the expected JSON output size for data extraction tasks.
 
         Notes
         -----
-        Unlike other LLM APIs, Claude does not support ``top_k`` or ``top_p``
-        parameters. For deterministic outputs in data extraction tasks, use
-        ``temperature=0.0``.
+        **Claude-specific considerations:**
 
-        Note that even with ``temperature=0.0``, the results will not be fully
-        deterministic due to implementation details in GPU operations.
+        - Anthropic recommends adjusting ``temperature`` first. Only modify ``top_p``
+          or ``top_k`` for advanced use cases.
+        - Anthropic suggests using either ``temperature`` or ``top_p``, not both
+          simultaneously for fine-tuned control.
+        - Even with ``temperature=0.0``, outputs may not be fully deterministic.
 
-        See https://docs.anthropic.com/en/api/messages for more information.
-        """  # noqa: E501
-        check_type(model_name, (str,), "model_name")
-        check_type(api_key, (str,), "api_key")
+        **Recommended settings for deterministic data extraction:**
+
+        - ``temperature=0.0``: Primary parameter for deterministic outputs.
+        - ``top_k=1``: Greedy decoding for maximum determinism.
+        - ``top_p``: Leave as ``None`` when using ``temperature=0.0``.
+
+        See https://docs.anthropic.com/en/api/messages for API documentation and
+        https://towardsdatascience.com/how-to-write-expert-prompts-for-chatgpt-gpt-4-and-other-language-models-23133dc85550/
+        for prompt engineering tips and best practices.
+        """
+        super().__init__(
+            model_name,
+            api_key,
+            system_instruction=system_instruction,
+            temperature=temperature,
+            top_p=top_p,
+            top_k=top_k,
+            max_tokens=max_tokens,
+        )
         self._client = Anthropic(api_key=api_key)
-        self._model_name = model_name
-        check_type(system_instruction, (str, None), "system_instruction")
-        check_type(temperature, ("numeric", None), "temperature")
-        if temperature is not None and (temperature < 0.0 or temperature > 1.0):
-            raise ValueError(
-                f"Temperature must be between 0.0 and 1.0. Provided {temperature} is "
-                "invalid."
-            )
-        check_type(max_tokens, ("int-like",), "max_tokens")
-        self._system_instruction = system_instruction
-        self._temperature = temperature
-        self._max_tokens = max_tokens
+
+        # Create Claude-specific config dictionary
+        # Note: Claude API uses "system" instead of "system_instruction"
+        self._config = {
+            "model": model_name,
+            "system": system_instruction,
+            "temperature": temperature,
+            "top_p": top_p,
+            "top_k": top_k,
+            "max_tokens": max_tokens,
+        }
 
     def query(self, prompt: str | Path, files: Iterable[str | Path]) -> str:
         """Query the Claude model with a given prompt and return the response.
@@ -88,9 +119,7 @@ class ClaudeModel(BaseModel):
         -----
         This method uses Claude's Files API to upload documents.
         """
-        prompt_text = read_markdown(prompt)
-        check_type(files, (Iterable,), "files")
-        files = [ensure_path(file, must_exist=True) for file in files]
+        prompt, files = super().query(prompt, files)
 
         # Upload files using the Files API
         uploaded_file_ids = []
@@ -112,19 +141,13 @@ class ClaudeModel(BaseModel):
             }
             for file_id in uploaded_file_ids
         ]
-        message_content.append({"type": "text", "text": prompt_text})
+        message_content.append({"type": "text", "text": prompt})
 
         # Create message with appropriate parameters
-        kwargs = {
-            "model": self._model_name,
-            "max_tokens": self._max_tokens,
-            "messages": [{"role": "user", "content": message_content}],
-        }
-
-        if self._system_instruction is not None:
-            kwargs["system"] = self._system_instruction
-        if self._temperature is not None:
-            kwargs["temperature"] = self._temperature
+        # Note: Claude uses a built-in "omit" system instead of `None`, thus we filter
+        # out None values from config before passing to API.
+        kwargs = {k: v for k, v in self._config.items() if v is not None}
+        kwargs["messages"] = [{"role": "user", "content": message_content}]
 
         # Make API call with Files API beta flag
         response = self._client.beta.messages.create(
