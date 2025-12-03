@@ -133,9 +133,9 @@ def _strip_markdown_fences(response: str) -> str:
 @click.option(
     "--max-tokens",
     type=int,
-    default=8192,
+    default=4096,
     help="Maximum tokens to generate. Set high enough for expected JSON output size. "
-    "Default: 8192.",
+    "Default: 4096.",
 )
 def run(
     src: Path,
@@ -248,10 +248,8 @@ def run(
                 click.echo("    📝 Querying model...")
                 if isinstance(model_instance, GeminiModel):
                     response = model_instance.query(
-                        prompt_path, json_schema_path, [pdf_path]
+                        prompt_path, [pdf_path], json_schema_path
                     )
-                    # GeminiModel returns GenerateContentResponse object
-                    response = response.text
                 else:  # ClaudeModel or others
                     response = model_instance.query(prompt_path, [pdf_path])
 

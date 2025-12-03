@@ -204,7 +204,7 @@ llmde prompt \
 - `--temperature`: Controls randomness in token selection, 0.0 to 1.0 (default: 0.0 for deterministic output)
 - `--top-p`: Nucleus sampling threshold, 0.0 to 1.0 (default: unset, use API default)
 - `--top-k`: Restricts sampling to top K tokens; use 1 for greedy decoding (default: unset)
-- `--max-tokens`: Maximum tokens to generate (default: 8192)
+- `--max-tokens`: Maximum tokens to generate (default: 4096)
 - `--output`: Save response to file (if not provided, prints to stdout)
 
 #### Examples
@@ -279,7 +279,7 @@ llmde run \
 - `--temperature`: Controls randomness in token selection, 0.0 to 1.0 (default: 0.0 for deterministic output)
 - `--top-p`: Nucleus sampling threshold, 0.0 to 1.0 (default: unset, use API default)
 - `--top-k`: Restricts sampling to top K tokens; use 1 for greedy decoding (default: unset)
-- `--max-tokens`: Maximum tokens to generate (default: 8192)
+- `--max-tokens`: Maximum tokens to generate (default: 4096)
 
 #### Examples
 
@@ -293,7 +293,7 @@ llmde run \
   --prompts study_identifier,study_information,intervention_protocol,outcome_assessment \
   --system-instruction systematic_review \
   --temperature 0.0 \
-  --max-tokens 8192
+  --max-tokens 4096
 ```
 
 **Using custom prompts:**

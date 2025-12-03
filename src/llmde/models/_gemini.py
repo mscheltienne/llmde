@@ -24,7 +24,7 @@ class GeminiModel(BaseModel):
         temperature: float | None = None,
         top_p: float | None = None,
         top_k: int | None = None,
-        max_tokens: int = 8192,
+        max_tokens: int = 4096,
     ) -> None:
         """Initialize the Gemini model with the given model name and API key.
 
@@ -57,7 +57,7 @@ class GeminiModel(BaseModel):
             selecting the most probable token. Lower values reduce randomness. For
             maximum determinism, use ``top_k=1``.
         max_tokens : int
-            Maximum number of tokens to generate in the response. Defaults to ``8192``.
+            Maximum number of tokens to generate in the response. Defaults to ``4096``.
             Set this high enough to accommodate the expected JSON output size for data
             extraction tasks.
 
@@ -106,23 +106,26 @@ class GeminiModel(BaseModel):
         }
 
     def query(
-        self, prompt: str | Path, json_schema: str | Path, files: Iterable[str | Path]
-    ) -> types.GenerateContentResponse:
+        self,
+        prompt: str | Path,
+        files: Iterable[str | Path],
+        json_schema: str | Path | None = None,
+    ) -> str:
         """Query the Gemini model with a given prompt and return the response.
 
         Parameters
         ----------
         prompt : str | Path
             The file to the prompt to send to the model.
-        json_schema : str | Path | None
-            The file to the JSON schema for the expected response format.
         files : Iterable[str | Path]
             A list of file paths to upload with the prompt.
+        json_schema : str | Path | None
+            The file to the JSON schema for the expected response format.
 
         Returns
         -------
-        response : types.GenerateContentResponse
-            The response from the model.
+        response : str
+            The text response from the model.
         """
         prompt, files = super().query(prompt, files)
 
@@ -141,7 +144,7 @@ class GeminiModel(BaseModel):
             contents=[prompt, *uploaded_files],
             config=types.GenerateContentConfig(**config),
         )
-        return response
+        return response.text
 
     def close(self) -> None:
         """Close the model client."""
