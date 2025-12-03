@@ -26,48 +26,73 @@ class GUIConfig:
     WINDOW_DEFAULT_WIDTH = 800
     WINDOW_DEFAULT_HEIGHT = 900
 
-    # --- Colors ---
+    # --- Colors (single source of truth for CSS template) ---
     COLORS = {
         # Background colors
         "bg_primary": "#f5f5f5",
         "bg_secondary": "#ffffff",
         "bg_tertiary": "#e8e8e8",
+        "bg_disabled": "#f0f0f0",
         # Text colors
         "text_primary": "#333333",
         "text_secondary": "#666666",
         "text_muted": "#999999",
+        "text_disabled": "#999999",
         # Border colors
         "border_primary": "#d0d0d0",
         "border_secondary": "#e0e0e0",
         "border_focus": "#4a90e2",
+        "border_disabled": "#e0e0e0",
         # Button colors
         "button_bg": "#e0e0e0",
         "button_hover": "#d0d0d0",
         "button_pressed": "#c0c0c0",
+        "button_disabled": "#e8e8e8",
         # Accent colors
         "accent_primary": "#4a90e2",
+        "accent_primary_hover": "#3a80d2",
+        "accent_primary_pressed": "#2a70c2",
         "accent_secondary": "#28a745",
-        "accent_gemini": "#4285f4",  # Google blue
-        "accent_claude": "#d97706",  # Anthropic orange/amber
+        "accent_gemini": "#4285f4",
+        "accent_claude": "#d97706",
+        # Action button colors
+        "action_disabled_bg": "#a0c4f0",
+        "action_disabled_border": "#90b4e0",
+        "action_disabled_opacity": "0.6",
         # Validation colors
         "validation_success": "#4CAF50",
         "validation_error": "#f44336",
         "validation_warning": "#ff9800",
-        # Disabled state colors
-        "bg_disabled": "#f0f0f0",
-        "text_disabled": "#999999",
-        "border_disabled": "#e0e0e0",
-        "button_disabled": "#e8e8e8",
+        # Disabled state
         "opacity_disabled": "0.5",
         # Drop zone colors
         "drop_zone_bg": "#fafafa",
         "drop_zone_border": "#c0c0c0",
         "drop_zone_active_bg": "#e3f2fd",
         "drop_zone_active_border": "#4a90e2",
-        # Highlight colors
-        "highlight_bg": "#4a90e2",
+        # Highlight colors (for animated button group)
+        "highlight_gradient_start": "#4a90e2",
+        "highlight_gradient_end": "#357abd",
+        "highlight_border": "rgba(255, 255, 255, 0.3)",
         "highlight_text": "#ffffff",
-        # Response panel
+        # Selection colors
+        "selection_bg": "#e3f2fd",
+        # Scrollbar colors
+        "scrollbar_bg": "#f0f0f0",
+        "scrollbar_handle": "#c0c0c0",
+        "scrollbar_hover": "#a0a0a0",
+        # Warning banner colors
+        "warning_banner_bg": "#fff3cd",
+        "warning_banner_text": "#856404",
+        "warning_banner_border": "#ffc107",
+        # File remove button
+        "file_remove_hover_bg": "rgba(244, 67, 54, 0.1)",
+        # Tooltip colors
+        "tooltip_bg": "#333333",
+        "tooltip_text": "#ffffff",
+        # Separator
+        "separator": "#e0e0e0",
+        # Response panel (dark theme for code display)
         "response_bg": "#1e1e1e",
         "response_text": "#d4d4d4",
     }
@@ -76,8 +101,8 @@ class GUIConfig:
     WINDOW_MARGINS = (20, 20, 20, 20)  # left, top, right, bottom
     SECTION_MARGINS = (0, 10, 0, 10)
     WIDGET_MARGINS = (0, 5, 0, 5)
-    BUTTON_GROUP_MARGINS = (0, 0, 0, 0)
-    BUTTON_GROUP_SPACING = 10
+    BUTTON_GROUP_MARGINS = (10, 10, 10, 10)
+    BUTTON_GROUP_SPACING = 15
     LAYOUT_SPACING = 10
     SECTION_SPACING = 15
 
@@ -90,8 +115,8 @@ class GUIConfig:
     API_KEY_INDICATOR_SIZE = (24, 24)
 
     # --- Animation Settings ---
-    ANIMATION_DURATION = 200  # milliseconds
-    ANIMATION_EASING = QEasingCurve.Type.OutCubic
+    ANIMATION_DURATION = 400  # milliseconds
+    ANIMATION_EASING = QEasingCurve.Type.OutQuint
 
     # --- Font Settings ---
     FONT_FAMILY_MONOSPACE = "Consolas, 'Courier New', monospace"
@@ -137,27 +162,32 @@ class GUIConfig:
     DEFAULT_MODEL_CLAUDE = "claude-sonnet-4-5-20250929"
 
     @classmethod
-    def get_stylesheet_path(cls) -> str:
-        """Get the path to the application stylesheet.
+    def get_stylesheet_template_path(cls) -> str:
+        """Get the path to the application stylesheet template.
 
         Returns
         -------
         str
-            Path to the style.css file.
+            Path to the style.css.template file.
         """
-        return str(files("llmde._gui.assets") / "style.css")
+        return str(files("llmde._gui.assets") / "style.css.template")
 
     @classmethod
     def load_stylesheet(cls) -> str:
-        """Load and return the application stylesheet content.
+        """Load and return the application stylesheet with colors substituted.
+
+        The stylesheet is generated from a template file where color placeholders
+        (e.g., ``{bg_primary}``, ``{text_primary}``) are replaced with actual
+        color values from the ``COLORS`` dictionary.
 
         Returns
         -------
         str
-            The CSS stylesheet content.
+            The CSS stylesheet content with all color values substituted.
         """
-        style_file = files("llmde._gui.assets") / "style.css"
-        return style_file.read_text(encoding="utf-8")
+        template_file = files("llmde._gui.assets") / "style.css.template"
+        template_content = template_file.read_text(encoding="utf-8")
+        return template_content.format(**cls.COLORS)
 
     @classmethod
     def get_icon(

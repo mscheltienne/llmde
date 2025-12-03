@@ -72,6 +72,8 @@ class PromptSelectorWidget(QWidget):
         self._setup_ui()
         self._populate_combo()
         self._connect_signals()
+        # Trigger initial validation for the pre-selected item
+        self._on_combo_changed(self._combo.currentText())
 
     def _setup_ui(self) -> None:
         """Set up the user interface."""
