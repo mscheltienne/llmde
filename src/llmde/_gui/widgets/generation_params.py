@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from superqt import QToggleSwitch
 
 
 class GenerationParametersWidget(QWidget):
@@ -40,82 +41,78 @@ class GenerationParametersWidget(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(10)
 
-        # --- Row 0: Temperature and Top P ---
+        # --- Row 0: Temperature and Max Tokens ---
         row0 = QHBoxLayout()
         row0.setSpacing(20)
 
         # Temperature (0.0 - 1.0)
         temp_container = QHBoxLayout()
         temp_container.setSpacing(6)
-        temp_label = QLabel("Temperature")
-        temp_container.addWidget(temp_label)
-
+        temp_container.addWidget(QLabel("Temperature"))
         self._temperature = QDoubleSpinBox()
         self._temperature.setRange(0.0, 1.0)
         self._temperature.setValue(0.0)
         self._temperature.setDecimals(2)
         self._temperature.setSingleStep(0.05)
-        self._temperature.setFixedWidth(80)
         temp_container.addWidget(self._temperature)
         temp_container.addStretch()
-
         row0.addLayout(temp_container, 1)
-
-        # Top P (0.0 - 1.0)
-        top_p_container = QHBoxLayout()
-        top_p_container.setSpacing(6)
-        top_p_label = QLabel("Top P")
-        top_p_container.addWidget(top_p_label)
-
-        self._top_p = QDoubleSpinBox()
-        self._top_p.setRange(0.0, 1.0)
-        self._top_p.setValue(1.0)
-        self._top_p.setDecimals(2)
-        self._top_p.setSingleStep(0.05)
-        self._top_p.setFixedWidth(80)
-        top_p_container.addWidget(self._top_p)
-        top_p_container.addStretch()
-
-        row0.addLayout(top_p_container, 1)
-
-        layout.addLayout(row0)
-
-        # --- Row 1: Top K and Max Tokens ---
-        row1 = QHBoxLayout()
-        row1.setSpacing(20)
-
-        # Top K (1 - 100)
-        top_k_container = QHBoxLayout()
-        top_k_container.setSpacing(6)
-        top_k_label = QLabel("Top K")
-        top_k_container.addWidget(top_k_label)
-
-        self._top_k = QSpinBox()
-        self._top_k.setRange(1, 100)
-        self._top_k.setValue(40)
-        self._top_k.setFixedWidth(80)
-        top_k_container.addWidget(self._top_k)
-        top_k_container.addStretch()
-
-        row1.addLayout(top_k_container, 1)
 
         # Max Tokens
         max_tokens_container = QHBoxLayout()
         max_tokens_container.setSpacing(6)
-        max_tokens_label = QLabel("Max Tokens")
-        max_tokens_container.addWidget(max_tokens_label)
-
+        max_tokens_container.addWidget(QLabel("Max Tokens"))
         self._max_tokens = QSpinBox()
         self._max_tokens.setRange(256, 32768)
-        self._max_tokens.setValue(8192)
+        self._max_tokens.setValue(4096)
         self._max_tokens.setSingleStep(256)
-        self._max_tokens.setFixedWidth(100)
         max_tokens_container.addWidget(self._max_tokens)
         max_tokens_container.addStretch()
+        row0.addLayout(max_tokens_container, 1)
 
-        row1.addLayout(max_tokens_container, 1)
+        layout.addLayout(row0)
+
+        # --- Row 1: Top P and Top K (both with API default toggles) ---
+        row1 = QHBoxLayout()
+        row1.setSpacing(20)
+
+        # Top P (0.0 - 1.0) with API default toggle
+        top_p_container = QHBoxLayout()
+        top_p_container.setSpacing(6)
+        top_p_container.addWidget(QLabel("Top P"))
+        self._top_p = QDoubleSpinBox()
+        self._top_p.setRange(0.0, 1.0)
+        self._top_p.setValue(0.95)
+        self._top_p.setDecimals(2)
+        self._top_p.setSingleStep(0.05)
+        top_p_container.addWidget(self._top_p)
+        self._top_p_default_toggle = QToggleSwitch()
+        self._top_p_default_toggle.setChecked(True)
+        top_p_container.addWidget(self._top_p_default_toggle)
+        top_p_container.addWidget(QLabel("API default"))
+        top_p_container.addStretch()
+        row1.addLayout(top_p_container, 1)
+
+        # Top K (1 - 100) with API default toggle
+        top_k_container = QHBoxLayout()
+        top_k_container.setSpacing(6)
+        top_k_container.addWidget(QLabel("Top K"))
+        self._top_k = QSpinBox()
+        self._top_k.setRange(1, 100)
+        self._top_k.setValue(40)
+        top_k_container.addWidget(self._top_k)
+        self._top_k_default_toggle = QToggleSwitch()
+        self._top_k_default_toggle.setChecked(True)
+        top_k_container.addWidget(self._top_k_default_toggle)
+        top_k_container.addWidget(QLabel("API default"))
+        top_k_container.addStretch()
+        row1.addLayout(top_k_container, 1)
 
         layout.addLayout(row1)
+
+        # Apply initial toggle states
+        self._on_top_p_toggle_changed(True)
+        self._on_top_k_toggle_changed(True)
 
     def _connect_signals(self) -> None:
         """Connect internal signals."""
@@ -123,61 +120,45 @@ class GenerationParametersWidget(QWidget):
         self._top_p.valueChanged.connect(self._on_parameter_changed)
         self._top_k.valueChanged.connect(self._on_parameter_changed)
         self._max_tokens.valueChanged.connect(self._on_parameter_changed)
+        self._top_p_default_toggle.toggled.connect(self._on_top_p_toggle_changed)
+        self._top_k_default_toggle.toggled.connect(self._on_top_k_toggle_changed)
+
+    def _on_top_p_toggle_changed(self, use_default: bool) -> None:
+        """Handle top_p API default toggle change."""
+        self._top_p.setEnabled(not use_default)
+        self._on_parameter_changed()
+
+    def _on_top_k_toggle_changed(self, use_default: bool) -> None:
+        """Handle top_k API default toggle change."""
+        self._top_k.setEnabled(not use_default)
+        self._on_parameter_changed()
 
     def _on_parameter_changed(self) -> None:
         """Handle parameter value changes."""
         self.parametersChanged.emit()
 
     def get_temperature(self) -> float:
-        """Get the temperature value.
-
-        Returns
-        -------
-        float
-            The temperature value (0.0-1.0).
-        """
+        """Get the temperature value."""
         return self._temperature.value()
 
     def get_top_p(self) -> float | None:
-        """Get the top_p value.
-
-        Returns
-        -------
-        float | None
-            The top_p value, or None if at default (1.0).
-        """
-        value = self._top_p.value()
-        return value if value < 1.0 else None
+        """Get the top_p value, or None if using API default."""
+        if self._top_p_default_toggle.isChecked():
+            return None
+        return self._top_p.value()
 
     def get_top_k(self) -> int | None:
-        """Get the top_k value.
-
-        Returns
-        -------
-        int | None
-            The top_k value, or None if at default (40).
-        """
-        value = self._top_k.value()
-        return value if value != 40 else None
+        """Get the top_k value, or None if using API default."""
+        if self._top_k_default_toggle.isChecked():
+            return None
+        return self._top_k.value()
 
     def get_max_tokens(self) -> int:
-        """Get the max_tokens value.
-
-        Returns
-        -------
-        int
-            The max_tokens value.
-        """
+        """Get the max_tokens value."""
         return self._max_tokens.value()
 
     def get_parameters(self) -> dict:
-        """Get all generation parameters as a dictionary.
-
-        Returns
-        -------
-        dict
-            Dictionary with temperature, top_p, top_k, max_tokens.
-        """
+        """Get all generation parameters as a dictionary."""
         return {
             "temperature": self.get_temperature(),
             "top_p": self.get_top_p(),
@@ -186,15 +167,11 @@ class GenerationParametersWidget(QWidget):
         }
 
     def setEnabled(self, enabled: bool) -> None:
-        """Enable or disable all controls.
-
-        Parameters
-        ----------
-        enabled : bool
-            Whether to enable the controls.
-        """
+        """Enable or disable all controls."""
         super().setEnabled(enabled)
         self._temperature.setEnabled(enabled)
-        self._top_p.setEnabled(enabled)
-        self._top_k.setEnabled(enabled)
+        self._top_p.setEnabled(enabled and not self._top_p_default_toggle.isChecked())
+        self._top_p_default_toggle.setEnabled(enabled)
+        self._top_k.setEnabled(enabled and not self._top_k_default_toggle.isChecked())
+        self._top_k_default_toggle.setEnabled(enabled)
         self._max_tokens.setEnabled(enabled)
