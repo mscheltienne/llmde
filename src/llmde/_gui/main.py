@@ -16,17 +16,19 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QMainWindow,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
-from llmde.io import read_json_schema, read_markdown
+from llmde.io import read_markdown
 
 from .dialogs import MarkdownEditorDialog
 from .utils import GUIConfig, WidgetGroupStateManager, apply_css_class
 from .widgets import (
     AnimatedButtonGroup,
     APIKeyWidget,
+    GenerationParametersWidget,
     PDFDropZone,
     PromptSelectorWidget,
     ResponsePanel,
@@ -55,6 +57,8 @@ class ExtractionWorker(QThread):
         List of PDF file paths.
     json_schema_path : str | None
         Path to JSON schema file for structured output (Gemini only).
+    generation_params : dict
+        Generation parameters (temperature, top_p, top_k, max_tokens).
     """
 
     finished = pyqtSignal(str, bool)  # (response, success)
@@ -69,6 +73,7 @@ class ExtractionWorker(QThread):
         system_instruction_path: str | None,
         files: list[Path],
         json_schema_path: str | None,
+        generation_params: dict,
     ) -> None:
         super().__init__()
         self._model_type = model_type
@@ -78,6 +83,7 @@ class ExtractionWorker(QThread):
         self._system_instruction_path = system_instruction_path
         self._files = files
         self._json_schema_path = json_schema_path
+        self._generation_params = generation_params
 
     def run(self) -> None:
         """Run the extraction in a background thread."""
@@ -87,10 +93,11 @@ class ExtractionWorker(QThread):
             if self._system_instruction_path:
                 system_instruction = read_markdown(self._system_instruction_path)
 
-            # Read JSON schema if path provided
-            json_schema = None
-            if self._json_schema_path:
-                json_schema = read_json_schema(self._json_schema_path)
+            # Extract generation parameters
+            temperature = self._generation_params.get("temperature", 0.0)
+            top_p = self._generation_params.get("top_p")
+            top_k = self._generation_params.get("top_k")
+            max_tokens = self._generation_params.get("max_tokens", 8192)
 
             if self._model_type == "gemini":
                 from llmde.models import GeminiModel
@@ -99,12 +106,15 @@ class ExtractionWorker(QThread):
                     model_name=self._model_name,
                     api_key=self._api_key,
                     system_instruction=system_instruction,
-                    temperature=0.0,
+                    temperature=temperature,
+                    top_p=top_p,
+                    top_k=top_k,
+                    max_tokens=max_tokens,
                 )
                 response = model.query(
                     self._prompt_path,
-                    files=self._files if self._files else None,
-                    json_schema=json_schema,
+                    self._files if self._files else [],
+                    self._json_schema_path,
                 )
             else:  # claude
                 from llmde.models import ClaudeModel
@@ -113,11 +123,14 @@ class ExtractionWorker(QThread):
                     model_name=self._model_name,
                     api_key=self._api_key,
                     system_instruction=system_instruction,
-                    temperature=0.0,
+                    temperature=temperature,
+                    top_p=top_p,
+                    top_k=top_k,
+                    max_tokens=max_tokens,
                 )
                 response = model.query(
                     self._prompt_path,
-                    files=self._files if self._files else None,
+                    self._files if self._files else [],
                 )
 
             self.finished.emit(response, True)
@@ -140,6 +153,7 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self._worker: ExtractionWorker | None = None
         self._widget_manager = WidgetGroupStateManager()
+        self._original_states: dict[str, bool] = {}
 
         self._setup_ui()
         self._connect_signals()
@@ -159,19 +173,25 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
 
-        main_layout = QVBoxLayout(central_widget)
+        # Main horizontal layout: config left, response right
+        main_layout = QHBoxLayout(central_widget)
         main_layout.setContentsMargins(*GUIConfig.WINDOW_MARGINS)
-        main_layout.setSpacing(GUIConfig.SECTION_SPACING)
+        main_layout.setSpacing(20)
+
+        # === LEFT COLUMN: Configuration ===
+        left_column = QWidget()
+        left_column.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred
+        )
+        left_column.setMinimumWidth(500)
+        left_column.setMaximumWidth(600)
+        left_layout = QVBoxLayout(left_column)
+        left_layout.setContentsMargins(0, 0, 0, 0)
+        left_layout.setSpacing(GUIConfig.SECTION_SPACING)
 
         # --- Model Selection ---
-        model_section = QWidget()
-        model_layout = QVBoxLayout(model_section)
-        model_layout.setContentsMargins(0, 0, 0, 0)
-
         self._model_selector = AnimatedButtonGroup(["Gemini", "Claude"])
-        model_layout.addWidget(self._model_selector)
-
-        main_layout.addWidget(model_section)
+        left_layout.addWidget(self._model_selector)
 
         # --- Model Name Input ---
         model_name_section = QWidget()
@@ -186,45 +206,57 @@ class MainWindow(QMainWindow):
         self._model_name_input.setPlaceholderText("Enter model name")
         model_name_layout.addWidget(self._model_name_input, 1)
 
-        main_layout.addWidget(model_name_section)
+        left_layout.addWidget(model_name_section)
 
-        # Separator
-        main_layout.addWidget(self._create_separator())
-
-        # --- API Key ---
+        # --- API Key (no separator before) ---
         self._api_key_widget = APIKeyWidget()
-        main_layout.addWidget(self._api_key_widget)
+        left_layout.addWidget(self._api_key_widget)
 
         # Separator
-        main_layout.addWidget(self._create_separator())
+        left_layout.addWidget(self._create_separator())
 
         # --- System Instruction Selector ---
         self._system_selector = PromptSelectorWidget("system")
-        main_layout.addWidget(self._system_selector)
+        left_layout.addWidget(self._system_selector)
 
         # --- Prompt Selector ---
         self._prompt_selector = PromptSelectorWidget("prompt")
-        main_layout.addWidget(self._prompt_selector)
+        left_layout.addWidget(self._prompt_selector)
+
+        # --- Generation Parameters ---
+        params_section = QWidget()
+        params_layout = QVBoxLayout(params_section)
+        params_layout.setContentsMargins(0, 0, 0, 0)
+        params_layout.setSpacing(5)
+
+        self._params_label = QLabel("Generation Parameters")
+        self._params_label.setProperty("class", "section-header")
+        params_layout.addWidget(self._params_label)
+
+        self._generation_params = GenerationParametersWidget()
+        params_layout.addWidget(self._generation_params)
+
+        left_layout.addWidget(params_section)
 
         # Separator
-        main_layout.addWidget(self._create_separator())
+        left_layout.addWidget(self._create_separator())
 
         # --- PDF Drop Zone ---
         pdf_section = QWidget()
         pdf_layout = QVBoxLayout(pdf_section)
         pdf_layout.setContentsMargins(0, 0, 0, 0)
 
-        pdf_label = QLabel("PDF Files (optional)")
-        pdf_label.setProperty("class", "section-header")
-        pdf_layout.addWidget(pdf_label)
+        self._pdf_label = QLabel("PDF Files (optional)")
+        self._pdf_label.setProperty("class", "section-header")
+        pdf_layout.addWidget(self._pdf_label)
 
         self._pdf_drop_zone = PDFDropZone()
         pdf_layout.addWidget(self._pdf_drop_zone)
 
-        main_layout.addWidget(pdf_section)
+        left_layout.addWidget(pdf_section)
 
         # Separator
-        main_layout.addWidget(self._create_separator())
+        left_layout.addWidget(self._create_separator())
 
         # --- Run Button ---
         run_section = QWidget()
@@ -240,14 +272,32 @@ class MainWindow(QMainWindow):
         run_layout.addWidget(self._run_btn)
 
         run_layout.addStretch()
-        main_layout.addWidget(run_section)
+        left_layout.addWidget(run_section)
 
-        # Separator
-        main_layout.addWidget(self._create_separator())
+        # Spacer to push everything up
+        left_layout.addStretch()
 
-        # --- Response Panel ---
+        main_layout.addWidget(left_column)
+
+        # Vertical separator between columns
+        v_separator = QFrame()
+        v_separator.setFrameShape(QFrame.Shape.VLine)
+        v_separator.setFrameShadow(QFrame.Shadow.Sunken)
+        main_layout.addWidget(v_separator)
+
+        # === RIGHT COLUMN: Response ===
+        right_column = QWidget()
+        right_column.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
+        right_layout = QVBoxLayout(right_column)
+        right_layout.setContentsMargins(0, 0, 0, 0)
+        right_layout.setSpacing(0)
+
         self._response_panel = ResponsePanel()
-        main_layout.addWidget(self._response_panel, 1)
+        right_layout.addWidget(self._response_panel, 1)
+
+        main_layout.addWidget(right_column, 1)
 
     def _create_separator(self) -> QFrame:
         """Create a horizontal separator line.
@@ -301,8 +351,12 @@ class MainWindow(QMainWindow):
             [self._prompt_selector],
         )
         self._widget_manager.register_group(
+            "generation-params",
+            [self._params_label, self._generation_params],
+        )
+        self._widget_manager.register_group(
             "file-drop",
-            [self._pdf_drop_zone],
+            [self._pdf_label, self._pdf_drop_zone],
         )
         self._widget_manager.register_group(
             "run-button",
@@ -389,6 +443,9 @@ class MainWindow(QMainWindow):
         if model_type == "gemini" and self._prompt_selector.has_json_schema():
             json_schema_path = self._prompt_selector.get_json_schema_path()
 
+        # Get generation parameters
+        generation_params = self._generation_params.get_parameters()
+
         # Disable UI during extraction
         self._set_running_state(True)
 
@@ -401,6 +458,7 @@ class MainWindow(QMainWindow):
             system_instruction_path=system_instruction_path,
             files=files,
             json_schema_path=json_schema_path,
+            generation_params=generation_params,
         )
         self._worker.finished.connect(self._on_extraction_finished)
         self._worker.start()
@@ -431,8 +489,7 @@ class MainWindow(QMainWindow):
             self._response_panel.clear()
         else:
             # Restore all input widgets
-            if hasattr(self, "_original_states"):
-                self._widget_manager.restore_all_groups(self._original_states)
+            self._widget_manager.restore_all_groups(self._original_states)
 
             # Restore run button appearance
             self._run_btn.setText("  Run Extraction")
@@ -497,7 +554,3 @@ def run_gui() -> int:
     window.show()
 
     return app.exec()
-
-
-if __name__ == "__main__":
-    sys.exit(run_gui())

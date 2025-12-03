@@ -5,13 +5,14 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QEvent, QObject, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QFileDialog,
     QHBoxLayout,
     QLabel,
     QPushButton,
     QScrollArea,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
@@ -19,7 +20,7 @@ from PyQt6.QtWidgets import (
 from ..utils import apply_css_class
 
 if TYPE_CHECKING:
-    from PyQt6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDropEvent, QMouseEvent
+    from PyQt6.QtGui import QDragEnterEvent, QDragLeaveEvent, QDropEvent
 
 
 class PDFDropZone(QWidget):
@@ -48,32 +49,36 @@ class PDFDropZone(QWidget):
 
     def _setup_ui(self) -> None:
         """Set up the user interface."""
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(10)
+        # Main horizontal layout: drop zone left, file list right
+        main_layout = QHBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(12)
 
-        # Drop zone area
+        # --- Left side: Drop zone ---
         self._drop_zone = QLabel()
         self._drop_zone.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._drop_zone.setMinimumHeight(120)
+        self._drop_zone.setFixedWidth(220)
+        self._drop_zone.setMinimumHeight(140)
         self._drop_zone.setWordWrap(True)
         self._drop_zone.setCursor(Qt.CursorShape.PointingHandCursor)
         self._update_drop_zone_text()
         self._apply_drop_zone_style()
-        layout.addWidget(self._drop_zone)
+        main_layout.addWidget(self._drop_zone)
 
-        # Make drop zone clickable
-        self._drop_zone.mousePressEvent = self._on_drop_zone_clicked
+        # Make drop zone clickable via event filter
+        self._drop_zone.installEventFilter(self)
 
-        # File list container
+        # --- Right side: File list container ---
         self._file_list_container = QWidget()
-        self._file_list_container.setVisible(False)
+        self._file_list_container.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+        )
         file_list_layout = QVBoxLayout(self._file_list_container)
         file_list_layout.setContentsMargins(0, 0, 0, 0)
-        file_list_layout.setSpacing(5)
+        file_list_layout.setSpacing(4)
 
         # Info label
-        self._info_label = QLabel()
+        self._info_label = QLabel("No files selected")
         self._info_label.setProperty("class", "status-text")
         file_list_layout.addWidget(self._info_label)
 
@@ -87,19 +92,19 @@ class PDFDropZone(QWidget):
             Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
         self._file_scroll_area.setFrameShape(QScrollArea.Shape.NoFrame)
-        self._file_scroll_area.setMaximumHeight(150)
+        self._file_scroll_area.setMinimumHeight(110)
 
         # Container for file items
         self._file_items_widget = QWidget()
         self._file_items_layout = QVBoxLayout(self._file_items_widget)
-        self._file_items_layout.setContentsMargins(0, 5, 5, 5)
-        self._file_items_layout.setSpacing(4)
+        self._file_items_layout.setContentsMargins(0, 0, 4, 0)
+        self._file_items_layout.setSpacing(2)
         self._file_items_layout.addStretch()
 
         self._file_scroll_area.setWidget(self._file_items_widget)
-        file_list_layout.addWidget(self._file_scroll_area)
+        file_list_layout.addWidget(self._file_scroll_area, 1)
 
-        layout.addWidget(self._file_list_container)
+        main_layout.addWidget(self._file_list_container, 1)
 
     def _update_drop_zone_text(self) -> None:
         """Update the drop zone text based on current state."""
@@ -117,15 +122,25 @@ class PDFDropZone(QWidget):
         else:
             apply_css_class(self._drop_zone, "drop-zone")
 
-    def _on_drop_zone_clicked(self, event: QMouseEvent) -> None:
-        """Handle click on drop zone to open file dialog.
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
+        """Filter events for the drop zone widget.
 
         Parameters
         ----------
-        event : QMouseEvent
-            The mouse event.
+        obj : QObject
+            The object that received the event.
+        event : QEvent
+            The event.
+
+        Returns
+        -------
+        bool
+            True if the event was handled, False otherwise.
         """
-        self._browse_files()
+        if obj is self._drop_zone and event.type() == QEvent.Type.MouseButtonPress:
+            self._browse_files()
+            return True
+        return super().eventFilter(obj, event)
 
     def _browse_files(self) -> None:
         """Open file dialog to browse for PDF files."""
@@ -219,10 +234,8 @@ class PDFDropZone(QWidget):
         self._clear_file_items()
 
         if not self._files:
-            self._file_list_container.setVisible(False)
+            self._info_label.setText("No files selected")
             return
-
-        self._file_list_container.setVisible(True)
 
         for file_path in self._files:
             self._create_file_item_widget(file_path)
@@ -250,25 +263,30 @@ class PDFDropZone(QWidget):
         file_widget = QWidget()
         apply_css_class(file_widget, "file-item")
         file_layout = QHBoxLayout(file_widget)
-        file_layout.setContentsMargins(8, 6, 8, 6)
-        file_layout.setSpacing(8)
+        file_layout.setContentsMargins(6, 4, 6, 4)
+        file_layout.setSpacing(6)
 
-        # Filename label
+        # Filename label with elided text
         filename = Path(file_path).name
         file_label = QLabel(filename)
         file_label.setToolTip(file_path)
-        file_label.setWordWrap(False)
 
-        # Truncate long filenames
-        if len(filename) > 40:
-            display_name = filename[:37] + "..."
+        # Use text elision for long filenames
+        file_label.setMinimumWidth(50)
+        file_label.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+        )
+
+        # Truncate display if needed (longer limit now)
+        if len(filename) > 55:
+            display_name = filename[:52] + "..."
             file_label.setText(display_name)
 
         file_layout.addWidget(file_label, 1)
 
         # Remove button
         remove_btn = QPushButton("✕")
-        remove_btn.setFixedSize(20, 20)
+        remove_btn.setFixedSize(18, 18)
         remove_btn.setToolTip(f"Remove {filename}")
         apply_css_class(remove_btn, "file-remove-button")
         remove_btn.clicked.connect(lambda: self._remove_file(file_path))

@@ -13,13 +13,14 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QVBoxLayout,
+    QWidget,
 )
 from superqt.utils import CodeSyntaxHighlight
 
 from ..widgets.line_number_edit import LineNumberTextEdit
 
 if TYPE_CHECKING:
-    pass
+    from PyQt6.QtGui import QCloseEvent
 
 
 class MarkdownEditorDialog(QDialog):
@@ -44,7 +45,7 @@ class MarkdownEditorDialog(QDialog):
         self,
         file_path: str,
         is_builtin: bool = False,
-        parent=None,
+        parent: QWidget | None = None,
     ) -> None:
         super().__init__(parent)
         self._file_path = Path(file_path)
@@ -207,7 +208,7 @@ class MarkdownEditorDialog(QDialog):
         """
         return self._has_changes
 
-    def closeEvent(self, event) -> None:
+    def closeEvent(self, event: QCloseEvent) -> None:
         """Handle window close event.
 
         Parameters

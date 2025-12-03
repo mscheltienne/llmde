@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 
 import qtawesome as qta
+from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QApplication,
@@ -180,8 +181,6 @@ class ResponsePanel(QWidget):
             self._copy_btn.setToolTip("Copied!")
 
             # Restore original icon after delay
-            from PyQt6.QtCore import QTimer
-
             QTimer.singleShot(1500, self._restore_copy_icon)
 
     def _restore_copy_icon(self) -> None:

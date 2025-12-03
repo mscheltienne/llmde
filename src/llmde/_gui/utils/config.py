@@ -21,10 +21,10 @@ class GUIConfig:
 
     # --- Window Settings ---
     WINDOW_TITLE = "LLMDE - Data Extraction"
-    WINDOW_MIN_WIDTH = 700
-    WINDOW_MIN_HEIGHT = 800
-    WINDOW_DEFAULT_WIDTH = 800
-    WINDOW_DEFAULT_HEIGHT = 900
+    WINDOW_MIN_WIDTH = 1200
+    WINDOW_MIN_HEIGHT = 700
+    WINDOW_DEFAULT_WIDTH = 1400
+    WINDOW_DEFAULT_HEIGHT = 800
 
     # --- Colors (single source of truth for CSS template) ---
     COLORS = {

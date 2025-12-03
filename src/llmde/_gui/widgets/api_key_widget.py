@@ -3,15 +3,12 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QWidget
 
 from ..utils import GUIConfig, set_validation_icon
-
-if TYPE_CHECKING:
-    pass
 
 
 class APIKeyWidget(QWidget):

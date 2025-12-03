@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 import qtawesome as qta
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -24,9 +24,6 @@ from llmde.prompts import (
 )
 
 from ..utils import GUIConfig, set_validation_icon
-
-if TYPE_CHECKING:
-    pass
 
 
 class PromptSelectorWidget(QWidget):
@@ -165,8 +162,8 @@ class PromptSelectorWidget(QWidget):
             self._is_builtin = True
             self._has_json_schema = False
             self._custom_path = None
-        elif text.startswith("/") or (len(text) > 1 and text[1] == ":"):
-            # This is a custom path (Unix or Windows)
+        elif Path(text).is_absolute():
+            # This is a custom path
             self._current_value = text
             self._is_builtin = False
             self._custom_path = text
