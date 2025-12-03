@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from .config import GUIConfig
-from .highlighters import JSONHighlighter, MarkdownHighlighter
 from .state_manager import WidgetGroupStateManager
 from .validation import (
     ValidationField,
@@ -17,8 +16,6 @@ from .validation import (
 
 __all__: list[str] = [
     "GUIConfig",
-    "JSONHighlighter",
-    "MarkdownHighlighter",
     "ValidationField",
     "WidgetGroupStateManager",
     "apply_css_class",

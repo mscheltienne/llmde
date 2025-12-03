@@ -14,8 +14,8 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QVBoxLayout,
 )
+from superqt.utils import CodeSyntaxHighlight
 
-from ..utils import MarkdownHighlighter
 from ..widgets.line_number_edit import LineNumberTextEdit
 
 if TYPE_CHECKING:
@@ -51,7 +51,7 @@ class MarkdownEditorDialog(QDialog):
         self._is_builtin = is_builtin
         self._original_content = ""
         self._has_changes = False
-        self._highlighter: MarkdownHighlighter | None = None
+        self._highlighter: CodeSyntaxHighlight | None = None
 
         self._setup_ui()
         self._load_content()
@@ -89,7 +89,9 @@ class MarkdownEditorDialog(QDialog):
         self._editor.setReadOnly(self._is_builtin)
 
         # Apply markdown highlighting
-        self._highlighter = MarkdownHighlighter(self._editor.document())
+        self._highlighter = CodeSyntaxHighlight(
+            self._editor.document(), "markdown", "default"
+        )
 
         layout.addWidget(self._editor, 1)
 

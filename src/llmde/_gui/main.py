@@ -47,14 +47,14 @@ class ExtractionWorker(QThread):
         The model name/identifier.
     api_key : str
         The API key.
-    prompt_content : str
-        The prompt content.
-    system_instruction : str | None
-        The system instruction content, or None.
+    prompt_path : str
+        Path to the prompt markdown file.
+    system_instruction_path : str | None
+        Path to the system instruction file, or None.
     files : list of Path
         List of PDF file paths.
-    json_schema : dict | None
-        JSON schema for structured output (Gemini only).
+    json_schema_path : str | None
+        Path to JSON schema file for structured output (Gemini only).
     """
 
     finished = pyqtSignal(str, bool)  # (response, success)
@@ -65,36 +65,46 @@ class ExtractionWorker(QThread):
         model_type: str,
         model_name: str,
         api_key: str,
-        prompt_content: str,
-        system_instruction: str | None,
+        prompt_path: str,
+        system_instruction_path: str | None,
         files: list[Path],
-        json_schema: dict | None,
+        json_schema_path: str | None,
     ) -> None:
         super().__init__()
         self._model_type = model_type
         self._model_name = model_name
         self._api_key = api_key
-        self._prompt_content = prompt_content
-        self._system_instruction = system_instruction
+        self._prompt_path = prompt_path
+        self._system_instruction_path = system_instruction_path
         self._files = files
-        self._json_schema = json_schema
+        self._json_schema_path = json_schema_path
 
     def run(self) -> None:
         """Run the extraction in a background thread."""
         try:
+            # Read system instruction content if path provided
+            system_instruction = None
+            if self._system_instruction_path:
+                system_instruction = read_markdown(self._system_instruction_path)
+
+            # Read JSON schema if path provided
+            json_schema = None
+            if self._json_schema_path:
+                json_schema = read_json_schema(self._json_schema_path)
+
             if self._model_type == "gemini":
                 from llmde.models import GeminiModel
 
                 model = GeminiModel(
                     model_name=self._model_name,
                     api_key=self._api_key,
-                    system_instruction=self._system_instruction,
+                    system_instruction=system_instruction,
                     temperature=0.0,
                 )
                 response = model.query(
-                    self._prompt_content,
+                    self._prompt_path,
                     files=self._files if self._files else None,
-                    json_schema=self._json_schema,
+                    json_schema=json_schema,
                 )
             else:  # claude
                 from llmde.models import ClaudeModel
@@ -102,11 +112,11 @@ class ExtractionWorker(QThread):
                 model = ClaudeModel(
                     model_name=self._model_name,
                     api_key=self._api_key,
-                    system_instruction=self._system_instruction,
+                    system_instruction=system_instruction,
                     temperature=0.0,
                 )
                 response = model.query(
-                    self._prompt_content,
+                    self._prompt_path,
                     files=self._files if self._files else None,
                 )
 
@@ -168,9 +178,9 @@ class MainWindow(QMainWindow):
         model_name_layout = QHBoxLayout(model_name_section)
         model_name_layout.setContentsMargins(0, 0, 0, 0)
 
-        model_name_label = QLabel("Model:")
-        model_name_label.setFixedWidth(80)
-        model_name_layout.addWidget(model_name_label)
+        self._model_name_label = QLabel("Model:")
+        self._model_name_label.setFixedWidth(80)
+        model_name_layout.addWidget(self._model_name_label)
 
         self._model_name_input = QLineEdit()
         self._model_name_input.setPlaceholderText("Enter model name")
@@ -276,7 +286,7 @@ class MainWindow(QMainWindow):
         )
         self._widget_manager.register_group(
             "model-name",
-            [self._model_name_input],
+            [self._model_name_label, self._model_name_input],
         )
         self._widget_manager.register_group(
             "api-key",
@@ -345,7 +355,7 @@ class MainWindow(QMainWindow):
         is_valid = (
             self._api_key_widget.is_valid()
             and self._prompt_selector.is_valid()
-            and self._model_name_input.text().strip()
+            and bool(self._model_name_input.text().strip())
         )
         self._run_btn.setEnabled(is_valid)
 
@@ -363,28 +373,21 @@ class MainWindow(QMainWindow):
         model_name = self._model_name_input.text().strip()
         api_key = self._api_key_widget.get_api_key()
 
-        # Get prompt content
+        # Get prompt path
         prompt_path = self._prompt_selector.get_prompt_path()
         if not prompt_path:
             return
 
-        prompt_content = read_markdown(prompt_path)
-
-        # Get system instruction content (optional)
-        system_instruction = None
-        system_path = self._system_selector.get_prompt_path()
-        if system_path:
-            system_instruction = read_markdown(system_path)
+        # Get system instruction path (optional)
+        system_instruction_path = self._system_selector.get_prompt_path()
 
         # Get files
         files = self._pdf_drop_zone.get_files()
 
-        # Get JSON schema for Gemini
-        json_schema = None
+        # Get JSON schema path for Gemini
+        json_schema_path = None
         if model_type == "gemini" and self._prompt_selector.has_json_schema():
-            json_path = self._prompt_selector.get_json_schema_path()
-            if json_path:
-                json_schema = read_json_schema(json_path)
+            json_schema_path = self._prompt_selector.get_json_schema_path()
 
         # Disable UI during extraction
         self._set_running_state(True)
@@ -394,10 +397,10 @@ class MainWindow(QMainWindow):
             model_type=model_type,
             model_name=model_name,
             api_key=api_key,
-            prompt_content=prompt_content,
-            system_instruction=system_instruction,
+            prompt_path=prompt_path,
+            system_instruction_path=system_instruction_path,
             files=files,
-            json_schema=json_schema,
+            json_schema_path=json_schema_path,
         )
         self._worker.finished.connect(self._on_extraction_finished)
         self._worker.start()

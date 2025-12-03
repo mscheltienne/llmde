@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import re
 
 import qtawesome as qta
 from PyQt6.QtGui import QFont
@@ -15,11 +15,9 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from superqt.utils import CodeSyntaxHighlight
 
-from ..utils import GUIConfig, JSONHighlighter
-
-if TYPE_CHECKING:
-    pass
+from ..utils import GUIConfig
 
 
 class ResponsePanel(QWidget):
@@ -38,7 +36,7 @@ class ResponsePanel(QWidget):
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
-        self._highlighter: JSONHighlighter | None = None
+        self._highlighter: CodeSyntaxHighlight | None = None
 
         self._setup_ui()
 
@@ -107,19 +105,45 @@ class ResponsePanel(QWidget):
         text : str
             The response text to display.
         """
+        # Strip markdown code fences if present
+        text = self._strip_code_fences(text)
+
         self._text_edit.setPlainText(text)
         self._copy_btn.setEnabled(bool(text.strip()))
 
         # Apply JSON highlighting if content looks like JSON
         if text.strip().startswith("{") or text.strip().startswith("["):
             if self._highlighter is None:
-                self._highlighter = JSONHighlighter(self._text_edit.document())
+                self._highlighter = CodeSyntaxHighlight(
+                    self._text_edit.document(), "json", "github-dark"
+                )
             self._highlighter.rehighlight()
         else:
             # Remove highlighter for non-JSON content
             if self._highlighter is not None:
                 self._highlighter.setDocument(None)
                 self._highlighter = None
+
+    @staticmethod
+    def _strip_code_fences(text: str) -> str:
+        """Strip markdown code fences from text.
+
+        Parameters
+        ----------
+        text : str
+            The text potentially wrapped in code fences.
+
+        Returns
+        -------
+        str
+            The text with code fences removed.
+        """
+        # Pattern matches ```json or ``` at start, and ``` at end
+        pattern = r"^```(?:json)?\s*\n?(.*?)\n?```\s*$"
+        match = re.match(pattern, text.strip(), re.DOTALL)
+        if match:
+            return match.group(1).strip()
+        return text
 
     def get_response(self) -> str:
         """Get the current response text.
