@@ -21,8 +21,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from llmde.io import read_markdown
-
+from ..io import read_markdown
+from ..models import ClaudeModel, GeminiModel
 from .dialogs import MarkdownEditorDialog
 from .utils import GUIConfig, WidgetGroupStateManager, apply_css_class
 from .widgets import (
@@ -36,6 +36,13 @@ from .widgets import (
 
 if TYPE_CHECKING:
     from PyQt6.QtGui import QCloseEvent
+
+
+# Mapping of model type strings to model classes
+_MODEL_CLASSES = {
+    "gemini": GeminiModel,
+    "claude": ClaudeModel,
+}
 
 
 class ExtractionWorker(QThread):
@@ -76,6 +83,7 @@ class ExtractionWorker(QThread):
         generation_params: dict,
     ) -> None:
         super().__init__()
+        assert model_type in ("gemini", "claude")  # sanity-check
         self._model_type = model_type
         self._model_name = model_name
         self._api_key = api_key
@@ -89,55 +97,35 @@ class ExtractionWorker(QThread):
         """Run the extraction in a background thread."""
         try:
             # Read system instruction content if path provided
-            system_instruction = None
-            if self._system_instruction_path:
-                system_instruction = read_markdown(self._system_instruction_path)
+            system_instruction = (
+                read_markdown(self._system_instruction_path)
+                if self._system_instruction_path
+                else None
+            )
 
-            # Extract generation parameters
-            temperature = self._generation_params.get("temperature", 0.0)
-            top_p = self._generation_params.get("top_p")
-            top_k = self._generation_params.get("top_k")
-            max_tokens = self._generation_params.get("max_tokens", 8192)
+            # Create model instance
+            model_class = _MODEL_CLASSES[self._model_type]
+            model = model_class(
+                model_name=self._model_name,
+                api_key=self._api_key,
+                system_instruction=system_instruction,
+                **self._generation_params,
+            )
 
+            # Query the model (Gemini supports json_schema, Claude does not)
+            query_kwargs = {
+                "prompt": self._prompt_path,
+                "files": self._files if self._files else [],
+            }
             if self._model_type == "gemini":
-                from llmde.models import GeminiModel
-
-                model = GeminiModel(
-                    model_name=self._model_name,
-                    api_key=self._api_key,
-                    system_instruction=system_instruction,
-                    temperature=temperature,
-                    top_p=top_p,
-                    top_k=top_k,
-                    max_tokens=max_tokens,
-                )
-                response = model.query(
-                    self._prompt_path,
-                    self._files if self._files else [],
-                    self._json_schema_path,
-                )
-            else:  # claude
-                from llmde.models import ClaudeModel
-
-                model = ClaudeModel(
-                    model_name=self._model_name,
-                    api_key=self._api_key,
-                    system_instruction=system_instruction,
-                    temperature=temperature,
-                    top_p=top_p,
-                    top_k=top_k,
-                    max_tokens=max_tokens,
-                )
-                response = model.query(
-                    self._prompt_path,
-                    self._files if self._files else [],
-                )
+                query_kwargs["json_schema"] = self._json_schema_path
+            response = model.query(**query_kwargs)
 
             self.finished.emit(response, True)
 
-        except Exception as e:
-            self.error.emit(str(e))
-            self.finished.emit(str(e), False)
+        except Exception as exc:
+            self.error.emit(str(exc))
+            self.finished.emit(str(exc), False)
 
 
 class MainWindow(QMainWindow):
@@ -330,37 +318,22 @@ class MainWindow(QMainWindow):
 
     def _register_widget_groups(self) -> None:
         """Register widget groups for state management."""
+        # All input controls are disabled together during extraction
         self._widget_manager.register_group(
-            "model-selector",
-            [*self._model_selector.buttons],
-        )
-        self._widget_manager.register_group(
-            "model-name",
-            [self._model_name_label, self._model_name_input],
-        )
-        self._widget_manager.register_group(
-            "api-key",
-            [self._api_key_widget],
-        )
-        self._widget_manager.register_group(
-            "system-instruction",
-            [self._system_selector],
-        )
-        self._widget_manager.register_group(
-            "prompt",
-            [self._prompt_selector],
-        )
-        self._widget_manager.register_group(
-            "generation-params",
-            [self._params_label, self._generation_params],
-        )
-        self._widget_manager.register_group(
-            "file-drop",
-            [self._pdf_label, self._pdf_drop_zone],
-        )
-        self._widget_manager.register_group(
-            "run-button",
-            [self._run_btn],
+            "input-controls",
+            [
+                *self._model_selector.buttons,
+                self._model_name_label,
+                self._model_name_input,
+                self._api_key_widget,
+                self._system_selector,
+                self._prompt_selector,
+                self._params_label,
+                self._generation_params,
+                self._pdf_label,
+                self._pdf_drop_zone,
+                self._run_btn,
+            ],
         )
 
     def _apply_stylesheet(self) -> None:
@@ -415,22 +388,14 @@ class MainWindow(QMainWindow):
 
     def _on_run_clicked(self) -> None:
         """Handle run button click."""
-        if self._worker is not None and self._worker.isRunning():
-            return
-
-        # Get model info
-        model_label = self._model_selector.selected_label
-        if not model_label:
-            return
-
-        model_type = model_label.lower()
+        # Get model info (always valid - selector initialized at startup, no way to
+        # deselect)
+        model_type = self._model_selector.selected_label.lower()
         model_name = self._model_name_input.text().strip()
         api_key = self._api_key_widget.get_api_key()
 
-        # Get prompt path
+        # Get prompt path (always valid - button disabled if invalid)
         prompt_path = self._prompt_selector.get_prompt_path()
-        if not prompt_path:
-            return
 
         # Get system instruction path (optional)
         system_instruction_path = self._system_selector.get_prompt_path()

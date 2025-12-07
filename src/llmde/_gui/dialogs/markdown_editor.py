@@ -181,12 +181,8 @@ class MarkdownEditorDialog(QDialog):
                 "Saved",
                 f"File saved successfully:\n{self._file_path}",
             )
-        except Exception as e:
-            QMessageBox.critical(
-                self,
-                "Error",
-                f"Failed to save file: {e}",
-            )
+        except Exception as exc:
+            QMessageBox.critical(self, "Error", f"Failed to save file: {exc}")
 
     def get_content(self) -> str:
         """Get the current editor content.

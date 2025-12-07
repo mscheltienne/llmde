@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from typing import Literal
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QSignalBlocker, Qt, pyqtSignal
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QWidget
 
 from ..utils import GUIConfig, set_validation_icon
@@ -131,12 +131,17 @@ class APIKeyWidget(QWidget):
         -------
         str
             The environment variable name.
+
+        Raises
+        ------
+        RuntimeError
+            If called before set_model() has been called.
         """
         if self._current_model == "gemini":
             return GUIConfig.ENV_VAR_GEMINI_API_KEY
         elif self._current_model == "claude":
             return GUIConfig.ENV_VAR_CLAUDE_API_KEY
-        return "LLMDE_*_API_KEY"
+        raise RuntimeError("_get_env_var_name called before set_model")
 
     def set_model(self, model: Literal["gemini", "claude"]) -> None:
         """Set the current model and load API key from environment.
@@ -155,9 +160,8 @@ class APIKeyWidget(QWidget):
         if env_value:
             self._source = "env"
             # Block signals to avoid triggering validation twice
-            self._input.blockSignals(True)
-            self._input.setText(env_value)
-            self._input.blockSignals(False)
+            with QSignalBlocker(self._input):
+                self._input.setText(env_value)
             self._update_source_icon()
             self._validate()
         else:
