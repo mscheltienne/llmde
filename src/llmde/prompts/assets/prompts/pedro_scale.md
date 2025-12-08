@@ -126,28 +126,53 @@ Concealed allocation means that the person who determined if a subject was eligi
 
 #### What Qualifies as Concealed Allocation
 
-A point is awarded even if "concealed allocation" is not explicitly stated, when the report describes:
+A point is awarded even if "concealed allocation" is not explicitly stated, when the report describes mechanisms that prevent foreknowledge of group assignment.
+
+**Traditional Concealment Mechanisms:**
 - Sealed opaque envelopes
 - Central/off-site randomization service
 - Contacting the holder of the allocation schedule who was "off-site"
 - Sequentially numbered, opaque, sealed containers
 - Third party handling allocation
 
+**Modern Algorithmic Concealment:**
+
+The PEDro scale was developed in 2003 when physical concealment was standard. Today, many studies use computerized randomization systems that inherently provide concealment through **real-time algorithmic allocation**. When allocation is determined at the moment of enrollment (not from a pre-generated list), the person enrolling cannot predict or access the allocation beforehand.
+
+**Systems that provide inherent concealment** (when allocation is real-time):
+- **REDCap** randomization module
+- **Castor EDC** randomization
+- **Sealed Envelope** (online randomization service)
+- **Randomizer** / **Research Randomizer**
+- **Randomization.com**
+- **StudyRandomizer**
+- **MinimPy** / **QMinim** (minimization software)
+- **SAS PROC PLAN** (when used for real-time allocation)
+- **R packages** (blockrand, randomizeR) when integrated into enrollment systems
+- Custom web-based randomization systems with real-time allocation
+
+**Key distinction:**
+- **Pre-allocated lists** (even if computer-generated): List exists before enrollment, could be accessed → additional concealment mechanism needed
+- **Real-time algorithmic randomization**: Allocation determined only at enrollment → inherently concealed if algorithm is not predictable
+
 #### What Does NOT Qualify
 
-- Simply stating "randomized" without describing concealment mechanism
+- Simply stating "randomized" without describing the mechanism
 - Transparent envelopes
 - Open allocation lists
+- Pre-generated randomization lists without additional protection
 - No mention of how allocation was protected
 
 #### Where to Find This Information
 
 - **Typical locations**: Methods (Randomization/Allocation section)
-- **Key indicators**: "concealed," "sealed envelopes," "central randomization," "off-site," "blinded allocation"
+- **Key indicators**: "concealed," "sealed envelopes," "central randomization," "off-site," "blinded allocation," names of randomization software/platforms
 
 #### Examples
 
 **Satisfies criterion (value = 1)**:
+
+*Traditional concealment:*
 ```
 Method: "Random allocation was handled by SR, with all other researchers, the
 participant and their parents being blind to condition membership"
@@ -160,6 +185,31 @@ the treatment or comparison program was sent to each clinical center."
 
 ```
 Method: "Matching was performed by an experimenter not involved in testing."
+```
+
+*Modern algorithmic concealment:*
+```
+Method: "Randomization was performed using REDCap's randomization module at the
+time of enrollment."
+→ Real-time algorithmic allocation = inherently concealed
+```
+
+```
+Method: "Participants were randomized via the Castor EDC platform immediately
+following baseline assessment."
+→ Real-time web-based allocation = inherently concealed
+```
+
+```
+Method: "A minimization method of randomization was performed to allocate the
+participants through the QMinim service."
+→ Real-time minimization algorithm = inherently concealed
+```
+
+```
+Method: "Group assignment was determined by the StudyRandomizer online system
+at the point of enrollment."
+→ Real-time online randomization = inherently concealed
 ```
 
 **Does NOT satisfy criterion (value = 0)**:

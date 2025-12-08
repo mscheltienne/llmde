@@ -128,11 +128,53 @@ contributes 1 point to the total score.
 
 ### Identifying Concealed Allocation
 
-Concealment is satisfied when the text describes mechanisms that prevent foreknowledge:
+The PEDro scale was developed in 2003 when physical concealment mechanisms (sealed envelopes,
+off-site schedulers) were the standard. Today, many studies use **modern computerized
+randomization systems** that inherently provide concealment through real-time algorithmic
+allocation.
+
+#### Traditional Concealment Mechanisms (satisfies criterion 3)
+
 - Sealed opaque envelopes
 - Central/off-site randomization service
-- Sequentially numbered containers
+- Sequentially numbered, opaque containers
 - Third party holding allocation schedule
+
+#### Modern Algorithmic Concealment (satisfies criterion 3)
+
+When a study uses a computerized randomization system that performs **real-time allocation**
+(not from a pre-generated list), concealment is inherently achieved because the person
+enrolling the participant cannot predict or access the allocation before enrollment.
+
+**Systems that provide inherent concealment** (when allocation is real-time):
+- **REDCap** randomization module
+- **Castor EDC** randomization
+- **Sealed Envelope** (online randomization service)
+- **Randomizer** / **Research Randomizer**
+- **Randomization.com**
+- **StudyRandomizer**
+- **MinimPy** / **QMinim** (minimization software)
+- **SAS PROC PLAN** (when used for real-time allocation)
+- **R randomization packages** (blockrand, randomizeR) when integrated into enrollment systems
+- Custom web-based randomization systems with real-time allocation
+
+**Key distinction**:
+- **Pre-allocated lists** (even if computer-generated): The list exists before enrollment,
+  so it could potentially be accessed → additional concealment mechanism needed
+- **Real-time algorithmic randomization**: Allocation is determined only at the moment of
+  enrollment → inherently concealed if the algorithm is not predictable
+
+**Example satisfying criterion 3**:
+```
+"Randomization was performed using REDCap's randomization module at the time of enrollment"
+→ Real-time algorithmic allocation = concealed
+```
+
+**Example NOT satisfying criterion 3**:
+```
+"A randomization list was generated using Excel before the study began"
+→ Pre-generated list could be accessed = concealment not demonstrated
+```
 
 Simply stating "randomized" does NOT imply concealment unless the mechanism is described.
 
