@@ -1,0 +1,388 @@
+{
+  "type": "object",
+  "properties": {
+    "criterion_1": {
+      "type": "object",
+      "description": "Eligibility criteria specified (external validity - does NOT count toward score)",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_2": {
+      "type": "object",
+      "description": "Random allocation",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_3": {
+      "type": "object",
+      "description": "Concealed allocation",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_4": {
+      "type": "object",
+      "description": "Groups similar at baseline",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_5": {
+      "type": "object",
+      "description": "Subject blinding",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_6": {
+      "type": "object",
+      "description": "Therapist blinding",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_7": {
+      "type": "object",
+      "description": "Assessor blinding",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_8": {
+      "type": "object",
+      "description": "Adequate follow-up (>85% retention)",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_9": {
+      "type": "object",
+      "description": "Intention-to-treat analysis",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_10": {
+      "type": "object",
+      "description": "Between-group statistical comparisons",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "criterion_11": {
+      "type": "object",
+      "description": "Point measures and measures of variability",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "enum": [0, 1]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "nullable": true
+        },
+        "rationale": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "required": ["value", "pages", "quotes", "rationale"]
+    },
+    "pedro_score": {
+      "type": "object",
+      "description": "Total PEDro score computed from criteria 2-11 (criterion 1 excluded)",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "max": {
+          "type": "integer",
+          "enum": [10]
+        },
+        "items_satisfied": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 11
+          },
+          "description": "List of criterion numbers (2-11) that received a score of 1"
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": ["total", "max", "items_satisfied", "note"]
+    }
+  },
+  "required": [
+    "criterion_1",
+    "criterion_2",
+    "criterion_3",
+    "criterion_4",
+    "criterion_5",
+    "criterion_6",
+    "criterion_7",
+    "criterion_8",
+    "criterion_9",
+    "criterion_10",
+    "criterion_11",
+    "pedro_score"
+  ]
+}
