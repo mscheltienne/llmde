@@ -218,6 +218,16 @@ Method: "Participants were randomly assigned to groups"
 → No description of concealment mechanism
 ```
 
+```
+Method: "A randomization list was generated using Excel before the study began"
+→ Pre-generated list could be accessed = concealment not demonstrated
+```
+
+```
+Method: "The research assistant used a pre-prepared randomization schedule"
+→ Pre-allocated list without description of how it was protected
+```
+
 ---
 
 ### Criterion 4: Groups Similar at Baseline
