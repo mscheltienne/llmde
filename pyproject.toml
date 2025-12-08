@@ -41,6 +41,9 @@ dependencies = [
   'numpy>=1.23,<3',
   'packaging',
   'psutil',
+  'PyQt6>=6.5',
+  'qtawesome>=1.3',
+  'superqt>=0.6',
 ]
 description = 'LLM-based data extraction from scientific papers.'
 dynamic = ["version"]
@@ -125,7 +128,8 @@ ignore-decorators = ["llmde.utils._docs.copy_doc"]
 include-package-data = false
 
 [tool.setuptools.package-data]
-'llmde' = ['prompts/assets/*']
+'llmde._gui' = ['assets/*.css.template']
+'llmde.prompts' = ['assets/**/*']
 
 [tool.setuptools.packages.find]
 include = ['llmde*']

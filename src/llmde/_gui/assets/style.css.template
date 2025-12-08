@@ -1,0 +1,420 @@
+/* LLMDE GUI Stylesheet Template
+   Color values are substituted from GUIConfig.COLORS at runtime.
+   Use {{placeholder_name}} syntax for color variables. */
+
+/* ============================================
+   Global Styles
+   ============================================ */
+
+QWidget {{
+    font-family: "Segoe UI", "SF Pro Display", sans-serif;
+    font-size: 13px;
+    color: {text_primary};
+    background-color: {bg_primary};
+}}
+
+QMainWindow {{
+    background-color: {bg_primary};
+}}
+
+/* ============================================
+   Labels
+   ============================================ */
+
+QLabel {{
+    color: {text_primary};
+    background-color: transparent;
+}}
+
+QLabel.section-header {{
+    font-size: 14px;
+    font-weight: bold;
+    color: {text_primary};
+    padding: 5px 0px;
+}}
+
+QLabel.status-text {{
+    font-size: 12px;
+    color: {text_secondary};
+}}
+
+QLabel.editor-path {{
+    font-size: 11px;
+    color: {text_secondary};
+    font-family: "Consolas", monospace;
+}}
+
+QLabel.warning-banner {{
+    background-color: {warning_banner_bg};
+    color: {warning_banner_text};
+    border: 1px solid {warning_banner_border};
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-weight: bold;
+}}
+
+QLabel:disabled {{
+    color: {text_disabled};
+    opacity: {opacity_disabled};
+}}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+QPushButton {{
+    background-color: {button_bg};
+    border: 1px solid {border_primary};
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: {text_primary};
+    min-height: 20px;
+}}
+
+QPushButton:hover {{
+    background-color: {button_hover};
+    border-color: {button_pressed};
+}}
+
+QPushButton:pressed {{
+    background-color: {button_pressed};
+}}
+
+QPushButton:disabled {{
+    background-color: {button_disabled};
+    border-color: {border_disabled};
+    color: {text_disabled};
+    opacity: {opacity_disabled};
+}}
+
+/* Action button (primary) */
+QPushButton.action-button {{
+    background-color: {accent_primary};
+    border: 1px solid {accent_primary_hover};
+    color: {highlight_text};
+    font-weight: bold;
+}}
+
+QPushButton.action-button:hover {{
+    background-color: {accent_primary_hover};
+    border-color: {accent_primary_pressed};
+}}
+
+QPushButton.action-button:pressed {{
+    background-color: {accent_primary_pressed};
+}}
+
+QPushButton.action-button:disabled {{
+    background-color: {action_disabled_bg};
+    border-color: {action_disabled_border};
+    color: {highlight_text};
+    opacity: {action_disabled_opacity};
+}}
+
+/* Model selector buttons - transparent design for sliding highlight effect */
+QPushButton.model-button {{
+    background-color: transparent;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: {text_secondary};
+}}
+
+QPushButton.model-button:hover {{
+    background-color: transparent;
+    color: {text_primary};
+}}
+
+QPushButton.model-button-selected {{
+    background-color: transparent;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: {highlight_text};
+}}
+
+QPushButton.model-button-selected:hover {{
+    background-color: transparent;
+    color: {highlight_text};
+}}
+
+QPushButton.model-button:disabled {{
+    background-color: transparent;
+    border: none;
+    color: {text_disabled};
+    opacity: {opacity_disabled};
+}}
+
+QPushButton.model-button-selected:disabled {{
+    background-color: transparent;
+    border: none;
+    color: {text_disabled};
+    opacity: {opacity_disabled};
+}}
+
+/* File remove button */
+QPushButton.file-remove-button {{
+    background-color: transparent;
+    border: none;
+    color: {text_muted};
+    font-size: 12px;
+    padding: 2px;
+    min-height: 16px;
+    min-width: 16px;
+}}
+
+QPushButton.file-remove-button:hover {{
+    color: {validation_error};
+    background-color: {file_remove_hover_bg};
+    border-radius: 10px;
+}}
+
+/* ============================================
+   Input Fields
+   ============================================ */
+
+QLineEdit {{
+    background-color: {bg_secondary};
+    border: 1px solid {border_primary};
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: {text_primary};
+    selection-background-color: {accent_primary};
+    selection-color: {highlight_text};
+}}
+
+QLineEdit:focus {{
+    border-color: {border_focus};
+}}
+
+QLineEdit:disabled {{
+    background-color: {bg_disabled};
+    border-color: {border_disabled};
+    color: {text_disabled};
+}}
+
+QLineEdit::placeholder {{
+    color: {text_muted};
+}}
+
+/* ============================================
+   Combo Box
+   ============================================ */
+
+QComboBox {{
+    background-color: {bg_secondary};
+    border: 1px solid {border_primary};
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 13px;
+    color: {text_primary};
+    min-height: 20px;
+}}
+
+QComboBox:hover {{
+    border-color: {border_focus};
+}}
+
+QComboBox:focus {{
+    border-color: {border_focus};
+}}
+
+QComboBox:disabled {{
+    background-color: {bg_disabled};
+    border-color: {border_disabled};
+    color: {text_disabled};
+}}
+
+QComboBox::drop-down {{
+    border: none;
+    width: 24px;
+}}
+
+QComboBox::down-arrow {{
+    width: 12px;
+    height: 12px;
+}}
+
+QComboBox QAbstractItemView {{
+    background-color: {bg_secondary};
+    border: 1px solid {border_primary};
+    border-radius: 4px;
+    selection-background-color: {selection_bg};
+    selection-color: {text_primary};
+}}
+
+/* ============================================
+   Text Edit / Plain Text Edit
+   ============================================ */
+
+QPlainTextEdit {{
+    background-color: {bg_secondary};
+    border: 1px solid {border_primary};
+    border-radius: 4px;
+    padding: 8px;
+    font-family: "Consolas", monospace;
+    font-size: 12px;
+    color: {text_primary};
+    selection-background-color: {accent_primary};
+    selection-color: {highlight_text};
+}}
+
+QPlainTextEdit:focus {{
+    border-color: {border_focus};
+}}
+
+QPlainTextEdit:disabled {{
+    background-color: {bg_disabled};
+    color: {text_disabled};
+}}
+
+/* ============================================
+   Scroll Area
+   ============================================ */
+
+QScrollArea {{
+    background-color: transparent;
+    border: none;
+}}
+
+QScrollBar:vertical {{
+    background-color: {scrollbar_bg};
+    width: 10px;
+    border-radius: 5px;
+}}
+
+QScrollBar::handle:vertical {{
+    background-color: {scrollbar_handle};
+    border-radius: 5px;
+    min-height: 30px;
+}}
+
+QScrollBar::handle:vertical:hover {{
+    background-color: {scrollbar_hover};
+}}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {{
+    height: 0px;
+}}
+
+QScrollBar:horizontal {{
+    background-color: {scrollbar_bg};
+    height: 10px;
+    border-radius: 5px;
+}}
+
+QScrollBar::handle:horizontal {{
+    background-color: {scrollbar_handle};
+    border-radius: 5px;
+    min-width: 30px;
+}}
+
+QScrollBar::handle:horizontal:hover {{
+    background-color: {scrollbar_hover};
+}}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {{
+    width: 0px;
+}}
+
+/* ============================================
+   Drop Zone
+   ============================================ */
+
+QLabel.drop-zone {{
+    background-color: {drop_zone_bg};
+    border: 2px dashed {drop_zone_border};
+    border-radius: 8px;
+    color: {text_secondary};
+    font-size: 14px;
+}}
+
+QLabel.drop-zone-active {{
+    background-color: {drop_zone_active_bg};
+    border: 2px dashed {drop_zone_active_border};
+    border-radius: 8px;
+    color: {accent_primary};
+    font-size: 14px;
+    font-weight: bold;
+}}
+
+/* ============================================
+   File Item
+   ============================================ */
+
+QWidget.file-item {{
+    background-color: {bg_secondary};
+    border: 1px solid {border_secondary};
+    border-radius: 4px;
+}}
+
+QWidget.file-item:hover {{
+    background-color: {bg_primary};
+    border-color: {border_primary};
+}}
+
+/* ============================================
+   Highlight Widget (for animated button group)
+   ============================================ */
+
+QWidget.highlight {{
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 {highlight_gradient_start}, stop:1 {highlight_gradient_end});
+    border-radius: 20px;
+    border: 1px solid {highlight_border};
+}}
+
+/* ============================================
+   Dialog
+   ============================================ */
+
+QDialog {{
+    background-color: {bg_primary};
+}}
+
+/* ============================================
+   Message Box
+   ============================================ */
+
+QMessageBox {{
+    background-color: {bg_primary};
+}}
+
+QMessageBox QLabel {{
+    color: {text_primary};
+}}
+
+/* ============================================
+   Tooltip
+   ============================================ */
+
+QToolTip {{
+    background-color: {tooltip_bg};
+    color: {tooltip_text};
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+}}
+
+/* ============================================
+   Separator
+   ============================================ */
+
+QFrame[frameShape="4"] {{
+    background-color: {separator};
+    max-height: 1px;
+}}
+
+QFrame[frameShape="5"] {{
+    background-color: {separator};
+    max-width: 1px;
+}}

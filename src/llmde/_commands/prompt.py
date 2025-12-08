@@ -70,9 +70,9 @@ from ._utils import (
 @click.option(
     "--max-tokens",
     type=int,
-    default=8192,
+    default=4096,
     help="Maximum tokens to generate. Set high enough for expected JSON output size. "
-    "Default: 8192.",
+    "Default: 4096.",
 )
 @click.option(
     "--output",
@@ -150,9 +150,7 @@ def run(
     click.echo("\n📝 Querying model...")
     try:
         if isinstance(model_instance, GeminiModel):
-            response = model_instance.query(prompt_path, json_schema_path, file)
-            # GeminiModel returns GenerateContentResponse object
-            response_text = response.text
+            response_text = model_instance.query(prompt_path, file, json_schema_path)
         else:  # ClaudeModel or others
             response_text = model_instance.query(prompt_path, file)
 
