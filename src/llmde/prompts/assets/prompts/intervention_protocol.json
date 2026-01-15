@@ -152,6 +152,83 @@
       },
       "required": ["value", "pages", "quotes"]
     },
+    "intervention_category": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string",
+          "enum": ["casual", "cbt", "cognitive_training", "physical", "psychoeducational"]
+        },
+        "secondary": {
+          "type": "string",
+          "enum": ["casual", "cbt", "cognitive_training", "physical", "psychoeducational"],
+          "nullable": true
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["primary", "secondary", "pages", "quotes"]
+    },
+    "game_genre": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "enum": ["fps", "tps", "sports", "driving", "rts", "moba", "tbs", "rpg", "action_rpg", "adventure", "action_adventure", "puzzle", "simulation", "rhythm_music", "platform", "fighting", "other"]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["value", "pages", "quotes"]
+    },
+    "game_mode": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "enum": ["single", "multi"]
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 1
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      },
+      "required": ["value", "pages", "quotes"]
+    },
     "platform": {
       "type": "object",
       "properties": {
@@ -181,5 +258,5 @@
       "required": ["value", "pages", "quotes"]
     }
   },
-  "required": ["intervention_period", "total_sessions", "total_intervention_time", "duration_per_session", "game_type", "platform"]
+  "required": ["intervention_period", "total_sessions", "total_intervention_time", "duration_per_session", "game_type", "intervention_category", "game_genre", "game_mode", "platform"]
 }
