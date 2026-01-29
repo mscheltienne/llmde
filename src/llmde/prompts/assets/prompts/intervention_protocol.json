@@ -157,11 +157,11 @@
       "properties": {
         "primary": {
           "type": "string",
-          "enum": ["casual", "cbt", "cognitive_training", "physical", "psychoeducational"]
+          "enum": ["casual", "cbt", "cognitive_training", "physical"]
         },
         "secondary": {
           "type": "string",
-          "enum": ["casual", "cbt", "cognitive_training", "physical", "psychoeducational"],
+          "enum": ["casual", "cbt", "cognitive_training", "physical"],
           "nullable": true
         },
         "pages": {
