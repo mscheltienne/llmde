@@ -44,7 +44,7 @@ You must extract the following elements from the document:
 
 ### Intervention Category
 - **Typical locations**: Introduction, Methods (Intervention description)
-- **Key indicators**: "cognitive behavioral therapy", "CBT", "cognitive training", "exergame", "physical", "psychoeducational", "casual game", "commercial game"
+- **Key indicators**: "cognitive behavioral therapy", "CBT", "cognitive training", "exergame", "physical", "casual game", "commercial game"
 
 ### Game Genre
 - **Typical locations**: Methods (Intervention description/Materials)
@@ -217,7 +217,7 @@ Introduction: "We developed a gamified cognitive behavioral therapy app..."
 
 **Task**: Classify the game intervention into one of the following therapeutic/functional categories based on its **mechanism of action**.
 
-**Allowed values:** [`casual`, `cbt`, `cognitive_training`, `physical`, `psychoeducational`]
+**Allowed values:** [`casual`, `cbt`, `cognitive_training`, `physical`]
 
 **Definitions:**
 
@@ -225,7 +225,6 @@ Introduction: "We developed a gamified cognitive behavioral therapy app..."
 - **`cbt`**: Teaches Cognitive Behavioral Therapy principles (e.g., cognitive restructuring, behavioral activation) through structured, therapeutic tasks.
 - **`cognitive_training`**: Aims to improve specific cognitive domains (e.g., attention, memory, executive function).
 - **`physical`**: Combines physical exercises and gaming that users carry out through physical actions (exergames).
-- **`psychoeducational`**: Provides health-related knowledge and skills (e.g., aims for prevention, awareness, adherence to medical treatment) without a formal CBT program.
 
 **Secondary category**: If a game clearly incorporates elements of a second category, you may include a secondary category. However, most games should have only one primary category.
 
@@ -245,9 +244,6 @@ Introduction: "Exploiting the potential of action video games in enhancing cogni
 
 Methods: "The intervention was Nintendo Wii bowling, framed as an exergame activity."
 → primary: "physical", secondary: null
-
-Methods: "Each level is designed to inform the patient about different treatment procedures, their functions, and the importance of these treatments."
-→ primary: "psychoeducational", secondary: null
 
 Methods: "The game teaches CBT skills while also including physical movement components."
 → primary: "cbt", secondary: "physical"
@@ -426,8 +422,8 @@ Return your response as a JSON object with the following structure:
     "quotes": ["Exact text from document", ...]
   },
   "intervention_category": {
-    "primary": "casual" or "cbt" or "cognitive_training" or "physical" or "psychoeducational",
-    "secondary": "casual" or "cbt" or "cognitive_training" or "physical" or "psychoeducational" or null,
+    "primary": "casual" or "cbt" or "cognitive_training" or "physical",
+    "secondary": "casual" or "cbt" or "cognitive_training" or "physical" or null,
     "pages": [page_number, ...],
     "quotes": ["Exact text from document", ...]
   },
