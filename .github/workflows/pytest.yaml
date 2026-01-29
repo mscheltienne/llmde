@@ -53,7 +53,7 @@ jobs:
         python-version: ["3.13"]
     name: pip pre-release - py${{ matrix.python-version }}
     runs-on: ubuntu-latest
-    steps:    
+    steps:
       - uses: pyvista/setup-headless-display-action@v3
         with:
           qt: true
