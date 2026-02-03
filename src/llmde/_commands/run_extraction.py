@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import shutil
+import time
 from pathlib import Path
 
 import click
@@ -269,6 +270,9 @@ def run(
 
             except Exception as exc:
                 click.echo(f"    ✗ Error: {exc}")
+
+            time.sleep(30)  # to avod rate limits
+        time.sleep(30)  # to avoid rate limits
 
     # Write manifest
     click.echo(f"\nWriting manifest: {manifest_path}")
