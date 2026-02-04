@@ -2,7 +2,7 @@
 
 ## Task
 
-Extract key methodological, demographic, and sample characteristics from this scientific paper to characterize the study design, setting, participant population, and sample flow.
+Extract key methodological, demographic, and sample characteristics from this scientific paper to characterize the study design, setting, participant population, intervention timing, and sample flow.
 
 ## Required Information
 
@@ -13,7 +13,7 @@ You must extract the following elements from the document:
 3. **Target Group**: Population descriptor characterizing who the intervention targets
 4. **Clinical Status**: Classification of participant clinical severity (healthy, subclinical, clinical)
 5. **Sample Size**: Total number of participants randomized and analyzed
-6. **Study Conditions/Arms**: All experimental groups, their classification, and per-arm sample sizes
+6. **Intervention Period**: Duration of the intervention in weeks
 7. **Attrition**: Dropout rates and numbers
 8. **Participant Age**: Mean or median age, standard deviation, range, and unit
 9. **Sex Distribution**: Counts and percentages of male and female participants
@@ -42,9 +42,9 @@ You must extract the following elements from the document:
 - **Typical locations**: Abstract, Methods (Participants/Sample), Results (Flow diagram/Participant flow), Tables (Baseline characteristics)
 - **Key indicators**: "N =", "n =", "sample size", "participants", "randomized", "analyzed", "completed", CONSORT flow diagram
 
-### Study Conditions/Arms
-- **Typical locations**: Introduction (hypotheses), methods section (study design, randomization), Results (flow diagram)
-- **Key indicators**: "randomized to...", "groups included...", "conditions were...", per-group sample sizes
+### Intervention Period
+- **Typical locations**: Methods (Intervention/Procedure/Protocol), Abstract
+- **Key indicators**: "for X weeks", "over X weeks", "X-week intervention", "lasted X days/months"
 
 ### Attrition
 - **Typical locations**: Results (Participant flow/Attrition), CONSORT flow diagram, Discussion (Limitations)
@@ -187,43 +187,37 @@ Protocol paper with no results yet:
 → total_randomized: null, total_analyzed: null
 ```
 
-### 6. Study Conditions/Arms
+### 6. Intervention Period
 
-**Task**: List all study conditions, map each to one of the allowed categories, and extract per-arm sample sizes.
+**Task**: For how many weeks did the intervention last?
 
-For each study arm/group/condition, extract:
+Extract the duration of the intervention protocol and convert to weeks.
 
-- **Name**: The specific name or description used by the authors
-- **Category**: Classification into one of the allowed values
-- **n_randomized**: Number of participants randomized to this arm (or `null` if not reported/protocol)
-- **n_analyzed**: Number of participants included in analysis for this arm (or `null` if not reported/protocol)
+**Derivation tracking**: Indicate whether the value was explicitly stated in weeks or required unit conversion.
 
-**Allowed category values:** [`experimental`, `active_control`, `waitlist`, `passive_control`]
+**Unit conversion**:
+- Days: divide by 7 (e.g., 14 days = 2 weeks)
+- Months: multiply by 4.33 (e.g., 1 month ≈ 4.33 weeks)
+- If range given: report as range (e.g., 5-7 weeks)
 
-**Category definitions:**
-
-- **`experimental`**: Group that receives the novel intervention or treatment being studied.
-- **`active_control`**: Group that receives a different, already established treatment, like the current standard of care (e.g., treatment as usual), or a sham treatment (a placebo) to control for other effects (e.g., placebo effects).
-- **`waitlist`**: Group that is on a waiting list to receive the experimental treatment after the study is over.
-- **`passive_control`**: Group that receives no intervention, live their life as usual during the intervention period (without intervention or no contact group).
+**Derivation rules**:
+- If stated in weeks: derivation = "stated"
+- If requires unit conversion: derivation = "calculated"
 
 **Examples:**
 
 ```
-Introduction: "Participants in exercise with VR were expected to report higher level of enjoyment than those who engagement in traditional exercises"
-Methods: "40 participants were randomized to VR exercise and 40 to traditional exercise"
-Results: "Final analysis included 38 VR and 35 traditional exercise participants"
-→ 1. name: "exercise with VR", category: experimental, n_randomized: 40, n_analyzed: 38
-→ 2. name: "traditional exercises", category: active_control, n_randomized: 40, n_analyzed: 35
+Methods: "Participants asked to play for 6 weeks."
+→ value: 6, unit: "weeks", derivation: "stated"
 
-Methods: "Participants were randomized to one of three cohorts: a BOXVR group (n=40), a guided video group (n=40), or a nonintervention control group (n=40)"
-→ 1. name: "BOXVR group", category: experimental, n_randomized: 40, n_analyzed: null
-→ 2. name: "guided video group", category: active_control, n_randomized: 40, n_analyzed: null
-→ 3. name: "nonintervention control group", category: passive_control, n_randomized: 40, n_analyzed: null
+Methods: "Participants were instructed to play for a month."
+→ value: 4.33, unit: "weeks", derivation: "calculated"
 
-Protocol paper: "Participants will be randomized 1:1 to the game intervention or waitlist control"
-→ 1. name: "game intervention", category: experimental, n_randomized: null, n_analyzed: null
-→ 2. name: "waitlist control", category: waitlist, n_randomized: null, n_analyzed: null
+Methods: "Participants were asked to completed their intervention over the course of approximately 5-7 weeks."
+→ value: [5, 7], unit: "weeks", derivation: "stated"
+
+Methods: "The intervention period lasted 14 days."
+→ value: 2, unit: "weeks", derivation: "calculated"
 ```
 
 ### 7. Attrition
@@ -339,15 +333,12 @@ Protocol paper with no results:
 ## Important Instructions
 
 1. **Extract exactly what you see**: Do not infer country from author names alone
-2. **Map arms carefully**: Use the definitions provided to categorize each condition
-3. **Report all arms**: Include every condition mentioned in the study
-4. **Handle missing values**: Use `null` for unreported numerical values
-5. **Preserve original naming**: Use the authors' exact names for study arms
-6. **Do not convert units**: Report ages in the units provided by authors
-7. **Be conservative**: If status or category is ambiguous, choose "unclear" or ask in a note
-8. **Handle protocols appropriately**: For protocol papers without results, use `null` for sample_size, attrition, sex_distribution, and per-arm sample sizes
-9. **Calculate when needed**: For attrition and sex distribution, calculate missing values when sufficient information is provided
-10. **Use exact descriptions**: For target_group, capture the authors' description accurately
+2. **Handle missing values**: Use `null` for unreported numerical values
+3. **Do not convert units for age**: Report ages in the units provided by authors
+4. **Be conservative**: If status is ambiguous, choose "unclear"
+5. **Handle protocols appropriately**: For protocol papers without results, use `null` for sample_size values, attrition, and sex_distribution
+6. **Calculate when needed**: For attrition and sex distribution, calculate missing values when sufficient information is provided
+7. **Use exact descriptions**: For target_group, capture the authors' description accurately
 
 ## Source Citation Requirements
 
@@ -402,17 +393,13 @@ Return your response as a JSON object with the following structure:
       "quotes": ["Exact text from document", ...]
     }
   },
-  "arms": [
-    {
-      "name": "Arm name as stated by authors",
-      "category": "experimental" | "active_control" | "waitlist" | "passive_control",
-      "n_randomized": integer or null,
-      "n_analyzed": integer or null,
-      "pages": [page_number, ...],
-      "quotes": ["Exact text from document", ...]
-    },
-    ...
-  ],
+  "intervention_period": {
+    "value": number or [min, max] or null,
+    "unit": "weeks",
+    "derivation": "stated" | "calculated" | null,
+    "pages": [page_number, ...],
+    "quotes": ["Exact text from document", ...]
+  },
   "attrition": {
     "n_dropout": integer or null,
     "dropout_rate": number or null,
@@ -499,42 +486,16 @@ Return your response as a JSON object with the following structure:
       ]
     }
   },
-  "arms": [
-    {
-      "name": "SPARX game intervention",
-      "category": "experimental",
-      "n_randomized": 40,
-      "n_analyzed": 35,
-      "pages": [4, 5, 6],
-      "quotes": [
-        "Participants randomized to the SPARX game intervention (n=40) completed seven modules",
-        "The SPARX group received weekly gaming sessions",
-        "35 participants in the SPARX condition completed the study"
-      ]
-    },
-    {
-      "name": "treatment as usual",
-      "category": "active_control",
-      "n_randomized": 40,
-      "n_analyzed": 32,
-      "pages": [4, 6],
-      "quotes": [
-        "The control group received treatment as usual from their primary care provider (n=40)",
-        "32 participants in TAU completed the study"
-      ]
-    },
-    {
-      "name": "waitlist control",
-      "category": "waitlist",
-      "n_randomized": 40,
-      "n_analyzed": 31,
-      "pages": [4, 6],
-      "quotes": [
-        "waitlist control (n=40)",
-        "31 participants in the waitlist condition completed the study"
-      ]
-    }
-  ],
+  "intervention_period": {
+    "value": 8,
+    "unit": "weeks",
+    "derivation": "stated",
+    "pages": [4, 5],
+    "quotes": [
+      "The intervention lasted 8 weeks",
+      "Participants completed the 8-week game intervention protocol"
+    ]
+  },
   "attrition": {
     "n_dropout": 22,
     "dropout_rate": 18.3,
@@ -619,28 +580,15 @@ Return your response as a JSON object with the following structure:
       "quotes": []
     }
   },
-  "arms": [
-    {
-      "name": "game intervention",
-      "category": "experimental",
-      "n_randomized": null,
-      "n_analyzed": null,
-      "pages": [5],
-      "quotes": [
-        "Participants will be randomized 1:1 to the game intervention or control"
-      ]
-    },
-    {
-      "name": "waitlist control",
-      "category": "waitlist",
-      "n_randomized": null,
-      "n_analyzed": null,
-      "pages": [5],
-      "quotes": [
-        "Participants will be randomized 1:1 to the game intervention or control"
-      ]
-    }
-  ],
+  "intervention_period": {
+    "value": 6,
+    "unit": "weeks",
+    "derivation": "stated",
+    "pages": [5],
+    "quotes": [
+      "The intervention will last 6 weeks"
+    ]
+  },
   "attrition": {
     "n_dropout": null,
     "dropout_rate": null,

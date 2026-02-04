@@ -1,0 +1,395 @@
+{
+  "type": "object",
+  "properties": {
+    "arms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "Name of the study arm as stated by authors"
+              },
+              "pages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "quotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            },
+            "required": ["value", "pages", "quotes"]
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "enum": ["experimental", "active_control", "waitlist", "passive_control"],
+                "description": "Classification of the arm type"
+              },
+              "pages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "quotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            },
+            "required": ["value", "pages", "quotes"]
+          },
+          "n_randomized": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer",
+                "nullable": true,
+                "description": "Number of participants randomized to this arm"
+              },
+              "pages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 0
+              },
+              "quotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 0
+              }
+            },
+            "required": ["value", "pages", "quotes"]
+          },
+          "n_analyzed": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "integer",
+                "nullable": true,
+                "description": "Number of participants from this arm included in final analysis"
+              },
+              "pages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 0
+              },
+              "quotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 0
+              }
+            },
+            "required": ["value", "pages", "quotes"]
+          },
+          "interventions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "game_name": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "description": "Name of the game or intervention"
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 1
+                    },
+                    "quotes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": ["value", "pages", "quotes"]
+                },
+                "game_type": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "enum": ["serious", "entertainment"],
+                      "description": "Classification based on design purpose"
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 1
+                    },
+                    "quotes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": ["value", "pages", "quotes"]
+                },
+                "intervention_category": {
+                  "type": "object",
+                  "properties": {
+                    "primary": {
+                      "type": "string",
+                      "enum": ["casual", "cbt", "cognitive_training", "physical"],
+                      "description": "Primary therapeutic mechanism"
+                    },
+                    "secondary": {
+                      "type": "string",
+                      "enum": ["casual", "cbt", "cognitive_training", "physical"],
+                      "nullable": true,
+                      "description": "Secondary therapeutic mechanism if applicable"
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 1
+                    },
+                    "quotes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": ["primary", "secondary", "pages", "quotes"]
+                },
+                "game_genre": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "enum": ["fps", "tps", "sports", "driving", "rts", "moba", "tbs", "rpg", "action_rpg", "adventure", "action_adventure", "puzzle", "simulation", "rhythm_music", "platform", "fighting", "other"],
+                      "description": "Game genre based on gameplay mechanics"
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 1
+                    },
+                    "quotes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": ["value", "pages", "quotes"]
+                },
+                "game_mode": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "enum": ["single", "multi"],
+                      "description": "Whether game is played individually or with others"
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 1
+                    },
+                    "quotes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": ["value", "pages", "quotes"]
+                },
+                "platform": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": ["pc", "console", "mobile", "tablet", "vr"]
+                      },
+                      "minItems": 1,
+                      "description": "Hardware platform(s) used to deliver the game"
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      },
+                      "minItems": 1
+                    },
+                    "quotes": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1
+                    }
+                  },
+                  "required": ["value", "pages", "quotes"]
+                }
+              },
+              "required": ["game_name", "game_type", "intervention_category", "game_genre", "game_mode", "platform"]
+            },
+            "minItems": 0,
+            "description": "List of games/interventions in this arm (empty for control arms with no intervention)"
+          },
+          "dosage": {
+            "type": "object",
+            "properties": {
+              "total_sessions": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "integer",
+                    "nullable": true,
+                    "description": "Total number of intervention sessions"
+                  },
+                  "derivation": {
+                    "type": "string",
+                    "enum": ["stated", "calculated"],
+                    "nullable": true,
+                    "description": "Whether value was stated or calculated"
+                  },
+                  "pages": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 0
+                  },
+                  "quotes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 0
+                  }
+                },
+                "required": ["value", "derivation", "pages", "quotes"]
+              },
+              "total_intervention_time": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "nullable": true,
+                    "description": "Total intervention time"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": ["hours"],
+                    "description": "Unit of measurement (always hours)"
+                  },
+                  "derivation": {
+                    "type": "string",
+                    "enum": ["stated", "calculated"],
+                    "nullable": true,
+                    "description": "Whether value was stated or calculated"
+                  },
+                  "pages": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 0
+                  },
+                  "quotes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 0
+                  }
+                },
+                "required": ["value", "unit", "derivation", "pages", "quotes"]
+              },
+              "duration_per_session": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["constant", "range"],
+                    "nullable": true,
+                    "description": "Whether duration is constant or varies"
+                  },
+                  "value": {
+                    "description": "Duration value: single number for constant, [min, max] array for range, or null",
+                    "nullable": true
+                  },
+                  "unit": {
+                    "type": "string",
+                    "enum": ["minutes"],
+                    "nullable": true,
+                    "description": "Unit of measurement (minutes when applicable)"
+                  },
+                  "pages": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 0
+                  },
+                  "quotes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 0
+                  }
+                },
+                "required": ["type", "value", "unit", "pages", "quotes"]
+              }
+            },
+            "required": ["total_sessions", "total_intervention_time", "duration_per_session"]
+          }
+        },
+        "required": ["name", "category", "n_randomized", "n_analyzed", "interventions", "dosage"]
+      },
+      "minItems": 1,
+      "description": "List of all study arms/conditions"
+    }
+  },
+  "required": ["arms"]
+}

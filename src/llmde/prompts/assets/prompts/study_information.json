@@ -153,44 +153,38 @@
       },
       "required": ["total_randomized", "total_analyzed"]
     },
-    "arms": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
+    "intervention_period": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "Duration in weeks: single number, [min, max] array for range, or null",
+          "nullable": true
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["weeks"]
+        },
+        "derivation": {
+          "type": "string",
+          "enum": ["stated", "calculated"],
+          "nullable": true
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 0
+        },
+        "quotes": {
+          "type": "array",
+          "items": {
             "type": "string"
           },
-          "category": {
-            "type": "string",
-            "enum": ["experimental", "active_control", "waitlist", "passive_control"]
-          },
-          "n_randomized": {
-            "type": "integer",
-            "nullable": true
-          },
-          "n_analyzed": {
-            "type": "integer",
-            "nullable": true
-          },
-          "pages": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            },
-            "minItems": 1
-          },
-          "quotes": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "minItems": 1
-          }
-        },
-        "required": ["name", "category", "n_randomized", "n_analyzed", "pages", "quotes"]
+          "minItems": 0
+        }
       },
-      "minItems": 1
+      "required": ["value", "unit", "derivation", "pages", "quotes"]
     },
     "attrition": {
       "type": "object",
@@ -312,5 +306,5 @@
       "required": ["n_female", "n_male", "pct_female", "pct_male", "derivation", "pages", "quotes"]
     }
   },
-  "required": ["completion_status", "countries", "target_group", "clinical_status", "sample_size", "arms", "attrition", "age", "sex_distribution"]
+  "required": ["completion_status", "countries", "target_group", "clinical_status", "sample_size", "intervention_period", "attrition", "age", "sex_distribution"]
 }
