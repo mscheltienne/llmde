@@ -39,12 +39,44 @@ For **each study arm/condition** identified in the document, you must extract th
 - **Key indicators**: "randomized to...", "groups included...", "conditions were...", "assigned to...", "experimental group", "control group", "treatment arm", per-group sample sizes
 
 ### Intervention Details (Fields 5-10)
-- **Typical locations**: Methods (Intervention description, Materials), Introduction (describing the intervention)
-- **Key indicators**: Game titles, "serious game", "commercial game", "gamified", platform descriptions, gameplay descriptions, "single player", "multiplayer"
+
+#### Game Name
+- **Typical locations**: Methods (Intervention description, Materials), Abstract, Title
+- **Key indicators**: Game titles, product names, "played [game name]", "used [intervention name]"
+
+#### Game Type
+- **Typical locations**: Methods (Intervention description), Introduction (describing the intervention)
+- **Key indicators**: "serious game", "applied game", "gamified", "commercial game", "COTS", "entertainment game"
+
+#### Intervention Category
+- **Typical locations**: Introduction, Methods (Intervention description)
+- **Key indicators**: "cognitive behavioral therapy", "CBT", "cognitive training", "exergame", "physical", "casual game", "commercial game"
+
+#### Game Genre
+- **Typical locations**: Methods (Intervention description/Materials)
+- **Key indicators**: Game title, gameplay descriptions, "puzzle", "adventure", "role-playing", "action", platform descriptions
+
+#### Game Mode
+- **Typical locations**: Methods (Intervention/Procedure)
+- **Key indicators**: "single player", "multiplayer", "played alone", "played together", "group play", "individual sessions"
+
+#### Platform/Device Delivery
+- **Typical locations**: Methods (Intervention/Materials), Abstract
+- **Key indicators**: "PC", "computer", "console", "mobile phone", "smartphone", "tablet", "VR headset", "virtual reality"
 
 ### Dosage Parameters (Fields 11-13)
-- **Typical locations**: Methods (Intervention/Procedure/Protocol), Abstract, Results (Adherence/Exposure)
-- **Key indicators**: "X sessions", "X minutes per session", "for X weeks", "total of X hours", session frequency
+
+#### Total Number of Sessions
+- **Typical locations**: Methods (Intervention/Procedure/Protocol)
+- **Key indicators**: "X sessions", "total of X sessions", "X sessions per week for Y weeks"
+
+#### Total Intervention Time
+- **Typical locations**: Methods (Intervention/Procedure), Results (Adherence/Exposure)
+- **Key indicators**: May require calculation from period × sessions/week × duration/session, or reported as mean exposure time in results
+
+#### Duration Per Session
+- **Typical locations**: Methods (Intervention/Procedure/Training protocol), Results (Adherence/Exposure)
+- **Key indicators**: "X minutes per session", "sessions lasted X minutes", "X-minute sessions"
 
 ## Detailed Field Definitions
 
@@ -264,7 +296,7 @@ Methods: "Players competed against each other in online matches."
 → value: "multi"
 ```
 
-#### 2.6 Platform
+#### 2.6 Platform/Device delivery
 
 **Task**: Identify the hardware platform(s) used to deliver this specific game.
 
