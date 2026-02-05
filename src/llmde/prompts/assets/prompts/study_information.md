@@ -270,22 +270,44 @@ Extract all available age information:
 - **Age range**: Minimum and maximum ages (if reported)
 - **Unit**: Typically "years"
 
+**Handling based on study completion status:**
+
+- **Completed studies**: Extract the **actual** mean/SD from results (baseline characteristics) and the **actual** age range of recruited participants.
+- **Ongoing/protocol studies**: Mean and SD are not yet available — use `null` for value, type, and sd. Extract the **inclusion criteria** age range from the eligibility criteria.
+
 **Important**: Always extract BOTH the numeric value AND the type of statistic (mean vs median). If only a range is given without mean/median, set value and type to null.
+
+**Handling incomplete ranges**: When only one bound is specified in eligibility criteria, use `null` for the unspecified bound:
+- "participants aged 65 years or older" → range: [65, null]
+- "adolescents under 18 years" → range: [null, 18]
 
 **Examples:**
 
 ```
+study_completion = ongoing
+Methods: "Eligible adolescents are those aged 12 to 14 years old"
+→ value: null, type: null, sd: null, range: [12, 14], unit: "years"
+
+study_completion = ongoing
+Methods: "We will recruit adults aged 65 years or older"
+→ value: null, type: null, sd: null, range: [65, null], unit: "years"
+
+study_completion = completed
 Methods: "Participants between the ages 10 and 15"
+Results: No mean/SD reported
 → value: null, type: null, sd: null, range: [10, 15], unit: "years"
 
+study_completion = completed
 Results: "The mean age was 15.5 years (SD = 2.3)"
 → value: 15.5, type: "mean", sd: 2.3, range: [null, null], unit: "years"
 
-Methods: "The median age was 34 years (range: 21-58)"
+study_completion = completed
+Results: "The median age was 34 years (range: 21-58)"
 → value: 34, type: "median", sd: null, range: [21, 58], unit: "years"
 
-Methods: "Adult participants (M = 34.2, SD = 8.1, range: 21-58 years)"
-→ value: 34.2, type: "mean", sd: 8.1, range: [21, 58], unit: "years"
+study_completion = completed
+Results: "At baseline, adolescents ranged from 11 to 15 years old (M = 13.27, SD = .88)"
+→ value: 13.27, type: "mean", sd: 0.88, range: [11, 15], unit: "years"
 ```
 
 ### 9. Sex Distribution
