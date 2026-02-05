@@ -175,6 +175,8 @@ Methods: "The intervention consisted of playing Nintendo Wii Sports Tennis."
 
 **Important**: This field classifies based on the game's **original design purpose**, not its therapeutic mechanism. A commercial game (entertainment) can still be used therapeutically. See `intervention_category` for the therapeutic mechanism classification.
 
+**Repurposed games**: If a game was originally designed for entertainment but is used therapeutically (even with modified instructions or in a therapeutic context), it remains classified as "entertainment". Only games explicitly designed for therapeutic/educational purposes are "serious". As long as the game is publicly available and was not explicitly designed for the therapy, classify it as "entertainment".
+
 **Examples:**
 
 ```
@@ -186,6 +188,10 @@ Methods: "Participants played Tetris, a commercial puzzle game."
 
 Introduction: "We developed a gamified cognitive behavioral therapy app..."
 → value: "serious"
+
+Methods: "Participants were instructed to play Tetris immediately after trauma exposure to reduce intrusive memories."
+→ value: "entertainment"
+Note: Even though Tetris is used therapeutically with specific instructions, it remains "entertainment" because it was not originally designed for therapeutic purposes.
 ```
 
 #### 2.3 Intervention Category
@@ -222,6 +228,10 @@ Methods: "The intervention was Nintendo Wii bowling, framed as an exergame activ
 
 Methods: "The game teaches CBT skills while also including physical movement components."
 → primary: "cbt", secondary: "physical"
+
+Methods: "Participants played Tetris, a puzzle game."
+→ primary: "casual", secondary: null
+Note: Puzzle games are classified as "casual" even though they may incidentally engage cognitive processes. Use "cognitive_training" only when the game is explicitly designed or used to improve specific cognitive domains (e.g., attention training programs, working memory training).
 ```
 
 #### 2.4 Game Genre
@@ -703,22 +713,22 @@ Return your response as a JSON object with the following structure:
         "total_sessions": {
           "value": null,
           "derivation": null,
-          "pages": [],
-          "quotes": []
+          "pages": null,
+          "quotes": null
         },
         "total_intervention_time": {
           "value": null,
           "unit": "hours",
           "derivation": null,
-          "pages": [],
-          "quotes": []
+          "pages": null,
+          "quotes": null
         },
         "duration_per_session": {
           "type": null,
           "value": null,
           "unit": null,
-          "pages": [],
-          "quotes": []
+          "pages": null,
+          "quotes": null
         }
       }
     }
@@ -749,8 +759,8 @@ Return your response as a JSON object with the following structure:
       },
       "n_analyzed": {
         "value": null,
-        "pages": [],
-        "quotes": []
+        "pages": null,
+        "quotes": null
       },
       "interventions": [
         {
@@ -828,30 +838,30 @@ Return your response as a JSON object with the following structure:
       },
       "n_analyzed": {
         "value": null,
-        "pages": [],
-        "quotes": []
+        "pages": null,
+        "quotes": null
       },
       "interventions": [],
       "dosage": {
         "total_sessions": {
           "value": null,
           "derivation": null,
-          "pages": [],
-          "quotes": []
+          "pages": null,
+          "quotes": null
         },
         "total_intervention_time": {
           "value": null,
           "unit": "hours",
           "derivation": null,
-          "pages": [],
-          "quotes": []
+          "pages": null,
+          "quotes": null
         },
         "duration_per_session": {
           "type": null,
           "value": null,
           "unit": null,
-          "pages": [],
-          "quotes": []
+          "pages": null,
+          "quotes": null
         }
       }
     }

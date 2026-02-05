@@ -131,8 +131,8 @@ Methods: "We recruited university students experiencing elevated anxiety."
 
 **Definitions:**
 
-- **`healthy`**: Individuals from the general population (non-patients) without a diagnosis and not meeting clinical thresholds for the target condition.
-- **`subclinical`**: Individuals with elevated or at-risk symptoms who do not meet full diagnostic criteria (e.g., mild symptoms, screening positive but below diagnostic threshold, no clinician diagnosis).
+- **`healthy`**: Individuals from the general population (non-patients) without a diagnosis and not meeting clinical thresholds for the target condition. No screening or diagnostic assessment was performed, or assessment showed no elevated symptoms.
+- **`subclinical`**: Individuals who completed a screening questionnaire or diagnostic assessment and scored above a symptom threshold (indicating elevated symptoms) but below the clinical cut-off for formal diagnosis. They have measurable symptoms but do not meet full diagnostic criteria.
 - **`clinical`**: Individuals with a formal diagnosis or who meet established clinical thresholds for the target condition, typically recruited from clinical/treatment settings (inpatient/outpatient).
 
 **Key indicators:**
@@ -332,7 +332,7 @@ Protocol paper with no results:
 
 ## Important Instructions
 
-1. **Extract exactly what you see**: Do not infer country from author names alone
+1. **Extract exactly what you see**: Do not infer country from author names or author affiliations (authors may be affiliated with institutions in a different country than where the study was conducted). However, you may infer country from explicit mentions of study locations such as city names, institution names where the study took place, or other geographic references in the study setting description
 2. **Handle missing values**: Use `null` for unreported numerical values
 3. **Do not convert units for age**: Report ages in the units provided by authors
 4. **Be conservative**: If status is ambiguous, choose "unclear"
@@ -577,8 +577,8 @@ Return your response as a JSON object with the following structure:
     },
     "total_analyzed": {
       "value": null,
-      "pages": [],
-      "quotes": []
+      "pages": null,
+      "quotes": null
     }
   },
   "intervention_period": {
@@ -594,8 +594,8 @@ Return your response as a JSON object with the following structure:
     "n_dropout": null,
     "dropout_rate": null,
     "derivation": null,
-    "pages": [],
-    "quotes": []
+    "pages": null,
+    "quotes": null
   },
   "age": {
     "value": null,
@@ -614,8 +614,8 @@ Return your response as a JSON object with the following structure:
     "pct_female": null,
     "pct_male": null,
     "derivation": null,
-    "pages": [],
-    "quotes": []
+    "pages": null,
+    "quotes": null
   }
 }
 ```

@@ -276,8 +276,8 @@ Return your response as a JSON object with the following structure:
   },
   "assessment_instruments": {
     "value": [],
-    "pages": [],
-    "quotes": []
+    "pages": null,
+    "quotes": null
   }
 }
 ```

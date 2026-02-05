@@ -158,7 +158,11 @@
       "properties": {
         "value": {
           "description": "Duration in weeks: single number, [min, max] array for range, or null",
-          "nullable": true
+          "oneOf": [
+            {"type": "number"},
+            {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+            {"type": "null"}
+          ]
         },
         "unit": {
           "type": "string",

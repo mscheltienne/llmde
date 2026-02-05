@@ -31,6 +31,10 @@ Read the complete document systematically to ensure you find all bibliographic e
 
 Authors should be extracted in the format: **Last Name, Initials** (e.g., "Scholten, H" or "Pedrelli, P")
 
+**Initials formatting rules:**
+- Concatenate all initials (first name, middle names) without spaces or periods (e.g., "Rutger C. M. E." → "RCME")
+- Preserve hyphens in hyphenated first names (e.g., "Shai-Lee" → "S-L")
+
 ### Examples of Author Extraction
 
 **Example 1:**
@@ -115,8 +119,8 @@ Return your response as a JSON object with the following structure:
 ```
 
 **Important**:
-- Each field must have matching lengths for `pages` and `quotes` arrays
-- Use `null` for the entire field structure if information is not found in the document
+- Each field must have matching lengths for `pages` and `quotes` arrays (when not null)
+- When information is not found in the document, use `null` for `value`, `pages`, and `quotes`
 - Include all supporting evidence, even if the same information appears multiple times
 
 ### Example Output
