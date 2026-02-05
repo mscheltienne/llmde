@@ -36,8 +36,7 @@ Think of yourself as a precise copying machine, not an analyst.
 ### 3. Handle Missing Information Transparently
 
 When information is not reported, use `null` or state "not reported". When ambiguous,
-provide the exact text with a note. When contradictory, report both instances with
-locations. Never fabricate or estimate unreported values.
+provide the exact text with a note. Never fabricate or estimate unreported values.
 
 ### 4. Maintain Consistency and Traceability
 

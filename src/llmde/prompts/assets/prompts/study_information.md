@@ -213,7 +213,7 @@ Methods: "Participants asked to play for 6 weeks."
 Methods: "Participants were instructed to play for a month."
 → value: 4.33, unit: "weeks", derivation: "calculated"
 
-Methods: "Participants were asked to completed their intervention over the course of approximately 5-7 weeks."
+Methods: "Participants were asked to complete their intervention over the course of approximately 5-7 weeks."
 → value: [5, 7], unit: "weeks", derivation: "stated"
 
 Methods: "The intervention period lasted 14 days."
