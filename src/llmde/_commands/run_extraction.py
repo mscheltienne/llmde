@@ -9,6 +9,7 @@ from pathlib import Path
 import click
 
 from ..models import GeminiModel
+from ..utils._text import strip_markdown_fences
 from ._utils import (
     get_api_key,
     get_model_class,
@@ -42,34 +43,6 @@ def _parse_prompts(prompts_str: str) -> list[tuple[Path, Path | None]]:
         prompt_data.append((prompt_path, json_schema_path))
 
     return prompt_data
-
-
-def _strip_markdown_fences(response: str) -> str:
-    """Strip markdown code fences from response text.
-
-    Parameters
-    ----------
-    response : str
-        Raw response text that may contain markdown code fences.
-
-    Returns
-    -------
-    str
-        Cleaned response text with code fences removed.
-
-    Notes
-    -----
-    This function removes common markdown code fence patterns like ```json or ```
-    from the beginning and end of the response text.
-    """
-    response_clean = response.strip()
-    if response_clean.startswith("```json"):
-        response_clean = response_clean[7:]
-    elif response_clean.startswith("```"):
-        response_clean = response_clean[3:]
-    if response_clean.endswith("```"):
-        response_clean = response_clean[:-3]
-    return response_clean.strip()
 
 
 @click.command(name="run")
@@ -255,7 +228,7 @@ def run(
                     response = model_instance.query(prompt_path, [pdf_path])
 
                 # Strip markdown code fences if present
-                response_clean = _strip_markdown_fences(response)
+                response_clean = strip_markdown_fences(response)
 
                 # Parse and save
                 try:

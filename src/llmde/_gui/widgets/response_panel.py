@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import re
-
 import qtawesome as qta
 from PyQt6.QtCore import QTimer
 from PyQt6.QtGui import QFont
@@ -18,6 +16,7 @@ from PyQt6.QtWidgets import (
 )
 from superqt.utils import CodeSyntaxHighlight
 
+from ...utils._text import strip_markdown_fences
 from ..utils import GUIConfig
 
 
@@ -107,7 +106,7 @@ class ResponsePanel(QWidget):
             The response text to display.
         """
         # Strip markdown code fences if present
-        text = self._strip_code_fences(text)
+        text = strip_markdown_fences(text)
 
         self._text_edit.setPlainText(text)
         self._copy_btn.setEnabled(bool(text.strip()))
@@ -124,27 +123,6 @@ class ResponsePanel(QWidget):
             if self._highlighter is not None:
                 self._highlighter.setDocument(None)
                 self._highlighter = None
-
-    @staticmethod
-    def _strip_code_fences(text: str) -> str:
-        """Strip markdown code fences from text.
-
-        Parameters
-        ----------
-        text : str
-            The text potentially wrapped in code fences.
-
-        Returns
-        -------
-        str
-            The text with code fences removed.
-        """
-        # Pattern matches ```json or ``` at start, and ``` at end
-        pattern = r"^```(?:json)?\s*\n?(.*?)\n?```\s*$"
-        match = re.match(pattern, text.strip(), re.DOTALL)
-        if match:
-            return match.group(1).strip()
-        return text
 
     def get_response(self) -> str:
         """Get the current response text.
