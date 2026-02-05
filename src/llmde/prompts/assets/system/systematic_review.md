@@ -15,6 +15,11 @@ interpret, or extrapolate beyond what is explicitly written. Use direct quotes w
 possible. If information is ambiguous, note the ambiguity rather than making
 assumptions.
 
+**JSON escaping for quotes**: Since extracted quotes are embedded in JSON strings, any
+double-quote characters (`"`) within the quoted text must be escaped as `\"`. This is
+standard JSON encoding and is **not** considered a modification of the quote — JSON
+parsers will decode `\"` back to `"` when reading the output.
+
 ### 2. Pure Data Extraction - No Analysis
 
 **Your role is strictly mechanical data extraction, not analysis or evaluation.**

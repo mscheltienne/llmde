@@ -67,6 +67,7 @@ For each piece of information you extract, you must provide **exhaustive and tho
 - **Be exhaustive**: Include every single quote and page that contributed to your answer
 - **One-to-one correspondence**: The number of quotes must exactly match the number of pages
 - **Direct quotes only**: Copy text exactly as it appears in the document
+- **JSON escaping for quotes**: Since quotes are embedded in a JSON string, any double-quote characters (`"`) within the quoted text must be escaped as `\"`. This is standard JSON encoding and is **not** considered a modification of the quote — JSON parsers will decode `\"` back to `"` when reading the output. For example, if the document contains: `The "primary" outcome was measured`, the JSON value should be: `"The \"primary\" outcome was measured"`
 - **No omissions**: Even if information seems obvious or redundant, include all supporting evidence
 
 ### Example Source Citations

@@ -642,6 +642,7 @@ Provide one of the following:
 - **Be exhaustive**: Include every quote and page that informed your decision
 - **One-to-one correspondence**: Number of quotes must exactly match number of pages
 - **Direct quotes only**: Copy text exactly as it appears in the document
+- **JSON escaping for quotes**: Since quotes are embedded in a JSON string, any double-quote characters (`"`) within the quoted text must be escaped as `\"`. This is standard JSON encoding and is **not** considered a modification of the quote — JSON parsers will decode `\"` back to `"` when reading the output. For example, if the document contains: `The "primary" outcome was measured`, the JSON value should be: `"The \"primary\" outcome was measured"`
 - **No omissions**: Include all supporting evidence, even if redundant
 
 ---

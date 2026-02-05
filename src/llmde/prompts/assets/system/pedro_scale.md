@@ -84,6 +84,11 @@ match the number of items in the `quotes` array.
 Copy text **exactly** as it appears in the document. Do not paraphrase, summarize, or
 interpret. Direct quotes are essential for verification and reproducibility.
 
+**JSON escaping for quotes**: Since extracted quotes are embedded in JSON strings, any
+double-quote characters (`"`) within the quoted text must be escaped as `\"`. This is
+standard JSON encoding and is **not** considered a modification of the quote — JSON
+parsers will decode `\"` back to `"` when reading the output.
+
 ## Understanding the PEDro Scale Structure
 
 ### Criterion 1: External Validity (Does NOT Count Toward Score)
