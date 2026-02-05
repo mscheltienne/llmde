@@ -244,7 +244,7 @@ def run(
             except Exception as exc:
                 click.echo(f"    ✗ Error: {exc}")
 
-            time.sleep(30)  # to avod rate limits
+            time.sleep(30)  # to avoid rate limits
         time.sleep(30)  # to avoid rate limits
 
     # Write manifest

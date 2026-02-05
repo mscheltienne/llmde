@@ -6,7 +6,7 @@ import re
 
 
 def strip_markdown_fences(text: str) -> str:
-    """Strip markdown code fences from text.
+    r"""Strip markdown code fences from text.
 
     Parameters
     ----------
