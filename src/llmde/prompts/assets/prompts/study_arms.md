@@ -20,15 +20,14 @@ For **each study arm/condition** identified in the document, you must extract th
 5. **Game Name**: The specific name of the game or intervention
 6. **Game Type**: Classification as serious or entertainment based on design purpose
 7. **Intervention Category**: Therapeutic mechanism (casual, cbt, cognitive_training, physical)
-8. **Game Genre**: Classification based on gameplay mechanics
-9. **Game Mode**: Whether played individually (single) or with others (multi)
-10. **Platform**: Hardware platform(s) used to deliver the game
+8. **Game Mode**: Whether played individually (single) or with others (multi)
+9. **Platform**: Hardware platform(s) used to deliver the game
 
 **Dosage Parameters** (at arm level):
 
-11. **Total Sessions**: Total number of intervention sessions prescribed
-12. **Total Intervention Time**: Cumulative duration of all intervention exposure
-13. **Duration Per Session**: Length of each individual session
+10. **Total Sessions**: Total number of intervention sessions prescribed
+11. **Total Intervention Time**: Cumulative duration of all intervention exposure
+12. **Duration Per Session**: Length of each individual session
 
 ## Where to Find This Information
 
@@ -38,7 +37,7 @@ For **each study arm/condition** identified in the document, you must extract th
 - **Typical locations**: Abstract, Methods (Study Design, Randomization, Intervention), Results (Flow diagram/CONSORT)
 - **Key indicators**: "randomized to...", "groups included...", "conditions were...", "assigned to...", "experimental group", "control group", "treatment arm", per-group sample sizes
 
-### Intervention Details (Fields 5-10)
+### Intervention Details (Fields 5-9)
 
 #### Game Name
 - **Typical locations**: Methods (Intervention description, Materials), Abstract, Title
@@ -52,10 +51,6 @@ For **each study arm/condition** identified in the document, you must extract th
 - **Typical locations**: Introduction, Methods (Intervention description)
 - **Key indicators**: "cognitive behavioral therapy", "CBT", "cognitive training", "exergame", "physical", "casual game", "commercial game"
 
-#### Game Genre
-- **Typical locations**: Methods (Intervention description/Materials)
-- **Key indicators**: Game title, gameplay descriptions, "puzzle", "adventure", "role-playing", "action", platform descriptions
-
 #### Game Mode
 - **Typical locations**: Methods (Intervention/Procedure)
 - **Key indicators**: "single player", "multiplayer", "played alone", "played together", "group play", "individual sessions"
@@ -64,7 +59,7 @@ For **each study arm/condition** identified in the document, you must extract th
 - **Typical locations**: Methods (Intervention/Materials), Abstract
 - **Key indicators**: "PC", "computer", "console", "mobile phone", "smartphone", "tablet", "VR headset", "virtual reality"
 
-### Dosage Parameters (Fields 11-13)
+### Dosage Parameters (Fields 10-12)
 
 #### Total Number of Sessions
 - **Typical locations**: Methods (Intervention/Procedure/Protocol)
@@ -234,52 +229,7 @@ Methods: "Participants played Tetris, a puzzle game."
 Note: Puzzle games are classified as "casual" even though they may incidentally engage cognitive processes. Use "cognitive_training" only when the game is explicitly designed or used to improve specific cognitive domains (e.g., attention training programs, working memory training).
 ```
 
-#### 2.4 Game Genre
-
-**Task**: Classify the game into one genre category based on gameplay mechanics. If none of the categories fit, use "other". Select only one primary genre.
-
-**Allowed values:** [`fps`, `tps`, `sports`, `driving`, `rts`, `moba`, `tbs`, `rpg`, `action_rpg`, `adventure`, `action_adventure`, `puzzle`, `simulation`, `rhythm_music`, `platform`, `fighting`, `other`]
-
-**Definitions:**
-
-- **`fps`** (First-Person Shooter): Real-time combat focused on aiming, shooting, running, hiding; single controllable character viewed in first-person; storyline is secondary. Tests reflexes, hand-eye coordination, and reaction time.
-- **`tps`** (Third-Person Shooter): Same as FPS but viewed from third-person perspective.
-- **`sports`**: Simulates the rules and gameplay of real-life sports to varying degrees of accuracy.
-- **`driving`**: Real-time control of vehicles; racing or driving simulation.
-- **`rts`** (Real-Time Strategy): Gather resources, build/defend bases, and command armies; play proceeds in real time and demands rapid thinking.
-- **`tbs`** (Turn-Based Strategy): Strategically maneuver units like RTS, but actions occur in turns, allowing pauses for analysis and planning.
-- **`moba`** (Multiplayer Online Battle Arena): Team-based matches where each player controls a single character; no base-building/resource gathering, but real-time attacking/defending.
-- **`rpg`** (Role-Playing Game): Emphasis on story and exploration; players control one character or a small party, gain experience to level up abilities; combat is often turn-based.
-- **`action_rpg`**: Shooter-style real-time combat (FPS/TPS mechanics) combined with RPG elements like story, exploration, experience, and leveling.
-- **`adventure`**: Compelling story, dialog trees, exploration, puzzle solving; no shooting/attacking.
-- **`action_adventure`**: Adventure-style exploration and puzzle solving paired with action combat mechanics.
-- **`puzzle`**: Point-and-click and drag-and-drop interactions centered on problem solving that require extensive planning.
-- **`simulation`**: Aims to replicate real-world activities (e.g., sports, management, construction, education, life).
-- **`rhythm_music`**: Players do something in rhythm with music (e.g., dancing, drumming, singing), scored for timing accuracy.
-- **`platform`**: Challenging players to run, jump, and climb through courses; obstacles must be overcome with precise timing and dexterity.
-- **`fighting`**: Combat between characters, often one-on-one battles, featuring blocking, grappling, counterattacking, and combo attacks.
-- **`other`**: Games that don't fit into any of the above categories (e.g., simple phone games, browser games, mini-game collections).
-
-**Examples:**
-
-```
-Methods: "It utilises both first person instruction and a three dimensional interactive game in which the young person chooses an avatar and undertakes a series of challenges to restore the balance in a fantasy world."
-→ value: "rpg"
-
-Methods: "Nintendo Wii Tennis was chosen as the exergame."
-→ value: "sports"
-
-Methods: "Participants played Tetris, a classic puzzle game."
-→ value: "puzzle"
-
-Methods: "The game involves navigating platforms and avoiding obstacles."
-→ value: "platform"
-
-Methods: "Players engage in rhythm-based activities synchronized to music."
-→ value: "rhythm_music"
-```
-
-#### 2.5 Game Mode
+#### 2.4 Game Mode
 
 **Task**: Identify whether the game was played individually (single player) or with other human participants (multiplayer) during the intervention.
 
@@ -306,7 +256,7 @@ Methods: "Players competed against each other in online matches."
 → value: "multi"
 ```
 
-#### 2.6 Platform/Device delivery
+#### 2.5 Platform/Device delivery
 
 **Task**: Identify the hardware platform(s) used to deliver this specific game.
 
@@ -479,10 +429,10 @@ For protocol papers without results:
 8. **Convert units consistently**: Always convert intervention period to weeks, total time to hours/minutes
 9. **Distinguish constant vs range**: For duration per session, carefully determine if duration is constant or varies
 10. **Prioritize planned protocol**: For total intervention time, use planned/prescribed duration from Methods unless only actual exposure is reported in Results
-11. **Extract exactly what you see**: For game type, category, genre, and platform, use the authors' descriptions
+11. **Extract exactly what you see**: For game type, category, and platform, use the authors' descriptions
 12. **Check multiple sections**: Total intervention time may require looking in both Methods (planned) and Results (actual)
 13. **Distinguish game_type from intervention_category**: game_type is about design purpose (serious vs entertainment); intervention_category is about therapeutic mechanism (cbt, cognitive_training, etc.)
-14. **Single primary category**: For intervention_category, game_genre, and game_mode, select the single best-fitting category
+14. **Single primary category**: For intervention_category and game_mode, select the single best-fitting category
 15. **Secondary category sparingly**: Only include a secondary intervention_category when clearly warranted
 
 ## Source Citation Requirements
@@ -543,11 +493,6 @@ Return your response as a JSON object with the following structure:
           "intervention_category": {
             "primary": "casual" | "cbt" | "cognitive_training" | "physical",
             "secondary": "casual" | "cbt" | "cognitive_training" | "physical" | null,
-            "pages": [page_number, ...],
-            "quotes": ["Exact text from document", ...]
-          },
-          "game_genre": {
-            "value": "fps" | "tps" | "sports" | "driving" | "rts" | "moba" | "tbs" | "rpg" | "action_rpg" | "adventure" | "action_adventure" | "puzzle" | "simulation" | "rhythm_music" | "platform" | "fighting" | "other",
             "pages": [page_number, ...],
             "quotes": ["Exact text from document", ...]
           },
@@ -643,11 +588,6 @@ Return your response as a JSON object with the following structure:
             "secondary": null,
             "pages": [4],
             "quotes": ["The game uses neurofeedback and exposure-based techniques derived from CBT."]
-          },
-          "game_genre": {
-            "value": "adventure",
-            "pages": [5],
-            "quotes": ["The game is a 3D adventure where players navigate through a haunted mansion."]
           },
           "game_mode": {
             "value": "single",
@@ -779,11 +719,6 @@ Return your response as a JSON object with the following structure:
             "secondary": null,
             "pages": [5],
             "quotes": ["The game teaches children CBT skills for managing negative automatic thoughts."]
-          },
-          "game_genre": {
-            "value": "adventure",
-            "pages": [5],
-            "quotes": ["Players navigate through an adventure game format."]
           },
           "game_mode": {
             "value": "single",

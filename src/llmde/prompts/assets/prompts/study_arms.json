@@ -190,31 +190,6 @@
                   },
                   "required": ["primary", "secondary", "pages", "quotes"]
                 },
-                "game_genre": {
-                  "type": "object",
-                  "properties": {
-                    "value": {
-                      "type": "string",
-                      "enum": ["fps", "tps", "sports", "driving", "rts", "moba", "tbs", "rpg", "action_rpg", "adventure", "action_adventure", "puzzle", "simulation", "rhythm_music", "platform", "fighting", "other"],
-                      "description": "Game genre based on gameplay mechanics"
-                    },
-                    "pages": {
-                      "type": "array",
-                      "items": {
-                        "type": "integer"
-                      },
-                      "minItems": 1
-                    },
-                    "quotes": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "minItems": 1
-                    }
-                  },
-                  "required": ["value", "pages", "quotes"]
-                },
                 "game_mode": {
                   "type": "object",
                   "properties": {
@@ -270,7 +245,7 @@
                   "required": ["value", "pages", "quotes"]
                 }
               },
-              "required": ["game_name", "game_type", "intervention_category", "game_genre", "game_mode", "platform"]
+              "required": ["game_name", "game_type", "intervention_category", "game_mode", "platform"]
             },
             "minItems": 0,
             "description": "List of games/interventions in this arm (empty for control arms with no intervention)"
