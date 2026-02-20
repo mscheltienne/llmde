@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 import shutil
 import time
 from pathlib import Path
@@ -16,6 +17,35 @@ from ._utils import (
     get_prompt_path,
     get_system_instruction_text,
 )
+
+
+def _sort_pdf_files(src: Path) -> list[Path]:
+    """Sort PDF files, using numeric suffix ordering when detected.
+
+    If all PDF filenames follow the pattern ``<number>. <name>.pdf``
+    (e.g. ``1. some name.pdf``, ``2. some other name.pdf``), sort by the
+    extracted number. Otherwise, sort alphabetically.
+
+    Parameters
+    ----------
+    src : Path
+        Source directory containing PDF files.
+
+    Returns
+    -------
+    list of Path
+        Sorted list of PDF file paths.
+    """
+    pdf_files = list(src.glob("*.pdf"))
+    if len(pdf_files) <= 1:
+        return pdf_files
+    pattern = re.compile(r"^(\d+)\. .+$")
+    if all(pattern.match(pdf.stem) for pdf in pdf_files):
+        return sorted(
+            pdf_files,
+            key=lambda p: int(pattern.match(p.stem).group(1)),
+        )
+    return sorted(pdf_files)
 
 
 def _parse_prompts(prompts_str: str) -> list[tuple[Path, Path | None]]:
@@ -170,7 +200,7 @@ def run(
     click.echo("  ✓ Model initialized")
 
     # Get list of PDFs
-    pdf_files = sorted(src.glob("*.pdf"))
+    pdf_files = _sort_pdf_files(src)
     if not pdf_files:
         click.echo(f"\n✗ No PDF files found in {src}")
         return
