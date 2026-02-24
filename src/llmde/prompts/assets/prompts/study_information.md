@@ -350,6 +350,15 @@ No overall mean/SD reported.
 
 **Task**: Extract the distribution of male and female participants, reporting both counts and percentages.
 
+**Which sample to extract sex from (priority order):**
+
+Sex may be reported at different stages (e.g., for the full randomized sample vs. the analyzed sample). Always prefer the **analyzed sample** — that is, the participants actually included in the final analysis — over the randomized or enrolled sample.
+
+**Handling based on study completion status:**
+
+- **Completed studies**: Extract sex distribution from the **analyzed sample** when available.
+- **Ongoing/protocol studies**: Sex distribution is not yet available — use `null` for all values including derivation.
+
 **Values to extract:**
 
 - **n_female**: Number of female participants
@@ -383,6 +392,10 @@ Table 1: "Female n=78 (65%)"
 
 Methods: "The sample was 70% female (N=120 total)."
 → n_female: 84 (calculated), n_male: 36 (calculated), pct_female: 70, pct_male: 30 (calculated), derivation: "calculated"
+
+Methods (randomized sample): "28 participants (18 females) were assigned to the intervention group and 28 (22 females) to the control group."
+Results (analyzed sample): "the experimental group left with 15 participants (12 females) and the control group left with 18 participants (14 females)"
+→ Use analyzed sample (first priority): n_female: 26 (12+14), n_male: 7 (3+4), pct_female: 78.79, pct_male: 21.21, derivation: "calculated"
 
 Protocol paper with no results:
 → n_female: null, n_male: null, pct_female: null, pct_male: null, derivation: null
