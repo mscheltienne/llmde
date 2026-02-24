@@ -251,6 +251,11 @@
         "unit": {
           "type": "string"
         },
+        "derivation": {
+          "type": "string",
+          "enum": ["stated", "calculated"],
+          "nullable": true
+        },
         "pages": {
           "type": "array",
           "items": {

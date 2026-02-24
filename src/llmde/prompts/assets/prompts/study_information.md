@@ -51,8 +51,9 @@ You must extract the following elements from the document:
 - **Key indicators**: "dropout", "attrition", "withdrew", "lost to follow-up", "discontinued", "did not complete"
 
 ### Participant Age
-- **Typical locations**: Methods (participants section), results (baseline characteristics), abstract
+- **Typical locations**: Results (baseline characteristics table of the **analyzed sample**), methods (participants section), abstract
 - **Key indicators**: "mean age", "median age", "aged between", "age range", demographic tables
+- **Priority**: Prefer age from the analyzed sample table over the randomized sample or abstract
 
 ### Sex Distribution
 - **Typical locations**: Methods (Participants), Results (Baseline characteristics table), Abstract
@@ -269,11 +270,20 @@ Extract all available age information:
 - **Standard deviation**: SD of age (if reported - typically only with mean)
 - **Age range**: Minimum and maximum ages (if reported)
 - **Unit**: Typically "years"
+- **Derivation**: Whether the value was "stated" or "calculated"
+
+**Which sample to extract age from (priority order):**
+
+Age may be reported at different stages (e.g., for the full randomized sample vs. the analyzed sample). Always prefer the **analyzed sample** — that is, the participants actually included in the final analysis — over the randomized or enrolled sample. Concretely:
+
+1. **First priority**: Age from the baseline characteristics table in the Results section that describes the **analyzed sample** (e.g., Table 1 titled "Pretest characteristics of the sample that completed the study").
+2. **Second priority**: Age from a baseline table describing the full randomized sample (if no analyzed-sample table exists).
+3. **Third priority**: Age reported in the abstract or methods text.
 
 **Handling based on study completion status:**
 
-- **Completed studies**: Extract the **actual** mean/SD from results (baseline characteristics) and the **actual** age range of recruited participants.
-- **Ongoing/protocol studies**: Mean and SD are not yet available — use `null` for value, type, and sd. Extract the **inclusion criteria** age range from the eligibility criteria.
+- **Completed studies**: Extract the **actual** mean/SD from results (baseline characteristics of the analyzed sample) and the **actual** age range of recruited participants.
+- **Ongoing/protocol studies**: Mean and SD are not yet available — use `null` for value, type, sd, and derivation. Extract the **inclusion criteria** age range from the eligibility criteria.
 
 **Important**: Always extract BOTH the numeric value AND the type of statistic (mean vs median). If only a range is given without mean/median, set value and type to null.
 
@@ -281,33 +291,59 @@ Extract all available age information:
 - "participants aged 65 years or older" → range: [65, null]
 - "adolescents under 18 years" → range: [null, 18]
 
+**Derivation tracking:**
+
+- **`stated`**: An overall mean/SD for the full sample is explicitly reported in text or a table
+- **`calculated`**: The overall mean/SD was computed from per-group values (see calculation rules below)
+
+**Calculating overall age from per-group data:**
+
+When the paper reports age **only per group** (e.g., separate means and SDs for intervention and control groups in a baseline characteristics table) and does NOT report an overall sample mean/SD, calculate the overall values as follows:
+
+- **Weighted mean**: `(n1 × mean1 + n2 × mean2) / (n1 + n2)`
+- **Pooled SD**: `sqrt(((n1 - 1) × sd1² + (n2 - 1) × sd2²) / (n1 + n2 - 2))`
+
+Where `n1`, `mean1`, `sd1` are the sample size, mean, and SD of group 1, and `n2`, `mean2`, `sd2` are for group 2. For studies with more than two groups, extend the formula accordingly.
+
+Round the calculated value and sd to **2 decimal places**.
+
+Set `derivation: "calculated"` when using this method. Include quotes for **all per-group values used** in the calculation.
+
 **Examples:**
 
 ```
 study_completion = ongoing
 Methods: "Eligible adolescents are those aged 12 to 14 years old"
-→ value: null, type: null, sd: null, range: [12, 14], unit: "years"
+→ value: null, type: null, sd: null, range: [12, 14], unit: "years", derivation: null
 
 study_completion = ongoing
 Methods: "We will recruit adults aged 65 years or older"
-→ value: null, type: null, sd: null, range: [65, null], unit: "years"
+→ value: null, type: null, sd: null, range: [65, null], unit: "years", derivation: null
 
 study_completion = completed
 Methods: "Participants between the ages 10 and 15"
 Results: No mean/SD reported
-→ value: null, type: null, sd: null, range: [10, 15], unit: "years"
+→ value: null, type: null, sd: null, range: [10, 15], unit: "years", derivation: null
 
 study_completion = completed
 Results: "The mean age was 15.5 years (SD = 2.3)"
-→ value: 15.5, type: "mean", sd: 2.3, range: [null, null], unit: "years"
+→ value: 15.5, type: "mean", sd: 2.3, range: [null, null], unit: "years", derivation: "stated"
 
 study_completion = completed
 Results: "The median age was 34 years (range: 21-58)"
-→ value: 34, type: "median", sd: null, range: [21, 58], unit: "years"
+→ value: 34, type: "median", sd: null, range: [21, 58], unit: "years", derivation: "stated"
 
 study_completion = completed
 Results: "At baseline, adolescents ranged from 11 to 15 years old (M = 13.27, SD = .88)"
-→ value: 13.27, type: "mean", sd: 0.88, range: [11, 15], unit: "years"
+→ value: 13.27, type: "mean", sd: 0.88, range: [11, 15], unit: "years", derivation: "stated"
+
+study_completion = completed
+Results table (analyzed sample, n1=18 intervention, n2=18 control):
+  "Age 22.67 ± 1.138" (intervention) and "23.11 ± 0.963" (control)
+No overall mean/SD reported.
+→ Weighted mean = (18 × 22.67 + 18 × 23.11) / 36 = 22.89
+→ Pooled SD = sqrt(((17 × 1.138² + 17 × 0.963²) / 34)) = 1.05
+→ value: 22.89, type: "mean", sd: 1.05, range: [null, null], unit: "years", derivation: "calculated"
 ```
 
 ### 9. Sex Distribution
@@ -436,6 +472,7 @@ Return your response as a JSON object with the following structure:
     "sd": number or null,
     "range": [min or null, max or null],
     "unit": "years",
+    "derivation": "stated" | "calculated" | null,
     "pages": [page_number, ...],
     "quotes": ["Exact text from document", ...]
   },
@@ -454,7 +491,7 @@ Return your response as a JSON object with the following structure:
 **Important**:
 - Each field must have matching lengths for `pages` and `quotes` arrays
 - Include all supporting evidence, even if the same information appears multiple times
-- For calculated values in attrition and sex_distribution, use appropriate derivation value
+- For calculated values in age, attrition, and sex_distribution, use appropriate derivation value
 
 ### Example Output
 
@@ -535,6 +572,7 @@ Return your response as a JSON object with the following structure:
     "sd": 1.8,
     "range": [12, 17],
     "unit": "years",
+    "derivation": "stated",
     "pages": [1, 5],
     "quotes": [
       "adolescents aged 12-17 years",
@@ -625,6 +663,7 @@ Return your response as a JSON object with the following structure:
     "sd": null,
     "range": [18, 65],
     "unit": "years",
+    "derivation": null,
     "pages": [3],
     "quotes": [
       "Adults aged 18-65 meeting DSM-5 criteria for GAD will be eligible"
