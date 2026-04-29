@@ -38,6 +38,12 @@ prompt_path, json_schema_path = get_prompt("study_identifier")
 - **`intervention_protocol`**: Extracts intervention dosage and delivery parameters
   (intervention period, total sessions, total time, duration per session, game type, platform)
 - **`outcome_assessment`**: Extracts primary outcomes targeted and assessment instruments used
+- **`extracted_outcomes`**: Extracts per-group, per-instrument mean and standard deviation
+  values at pre- and post-intervention for every reported questionnaire/scale (not limited
+  to anxiety/depression). Output is a long-format `measurements` array with rows
+  `(group, outcome, primary, mean, std)` directly mappable to a DataFrame; subscales and
+  totals are reported as independent rows using a canonical
+  `<Instrument> - <Subscale|Total> - <pre|post>` outcome identifier
 
 ### System Instructions
 
