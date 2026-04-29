@@ -1,0 +1,192 @@
+{
+  "type": "object",
+  "properties": {
+    "arms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "Name of the study arm as stated by the authors"
+              },
+              "pages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "quotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            },
+            "required": ["value", "pages", "quotes"]
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "enum": ["experimental", "active_control", "passive_control"],
+                "nullable": true,
+                "description": "Classification of the arm. Waitlist arms are mapped to passive_control. Use null when category cannot be determined."
+              },
+              "pages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1,
+                "nullable": true
+              },
+              "quotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "nullable": true
+              }
+            },
+            "required": ["value", "pages", "quotes"]
+          },
+          "identifier": {
+            "type": "string",
+            "description": "Composed identifier '<arm name> (<category|unknown>)' used as the 'group' field in measurements. Use the literal string 'unknown' when category.value is null."
+          }
+        },
+        "required": ["name", "category", "identifier"]
+      },
+      "minItems": 1,
+      "description": "List of all study arms/conditions"
+    },
+    "instruments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "description": "Canonical abbreviation of the instrument (e.g., 'BDI-II', 'DASS-21', 'GAD-7')"
+              },
+              "pages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "quotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            },
+            "required": ["value", "pages", "quotes"]
+          },
+          "primary": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "boolean",
+                "description": "True if this instrument is designated as the primary or co-primary outcome measure of the study"
+              },
+              "pages": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "minItems": 1
+              },
+              "quotes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            },
+            "required": ["value", "pages", "quotes"]
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "List of components reported numerically in the paper for this instrument, formatted as '<Instrument> - <Subscale|Total>'. Only include components for which any statistic (mean, std, median, etc.) is reported for at least one (group, time) cell."
+          }
+        },
+        "required": ["name", "primary", "components"]
+      },
+      "minItems": 0,
+      "description": "Metadata for each questionnaire/instrument used to score participants. Not necessarily restricted to anxiety or depression. Empty array if no instruments are used (e.g., protocol papers without planned instruments listed)."
+    },
+    "measurements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "description": "Identifier matching one entry in arms[].identifier (format: '<arm name> (<category|unknown>)')."
+          },
+          "outcome": {
+            "type": "string",
+            "description": "Outcome identifier formatted as '<Instrument> - <Subscale|Total> - <pre|post>'."
+          },
+          "primary": {
+            "type": "boolean",
+            "description": "Mirrors instruments[].primary.value for the parent instrument."
+          },
+          "mean": {
+            "type": "number",
+            "nullable": true,
+            "description": "Raw arithmetic mean reported for this (group, outcome, time) cell. Null if not reported as a raw mean (e.g., median, adjusted mean, graphical only)."
+          },
+          "std": {
+            "type": "number",
+            "nullable": true,
+            "description": "Standard deviation reported alongside the raw mean. Null if not reported as SD (e.g., SE, CI, IQR, range)."
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "description": "Free-text observation when mean and/or std are null and a different statistic was reported (e.g., 'Median (IQR) = 12 (8-16)'), or when only an adjusted/LSMean was reported, or when values were only available graphically. Null when mean and std are both reported and no further note is needed."
+          },
+          "pages": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "minItems": 1
+          },
+          "quotes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        },
+        "required": ["group", "outcome", "primary", "mean", "std", "note", "pages", "quotes"]
+      },
+      "minItems": 0,
+      "description": "Long-format list of measurements. One entry per (group, outcome, time) cell for which any numeric statistic is reported. Maps directly to a DataFrame with columns Group | Outcome | primary | mean | std (plus note/pages/quotes for traceability)."
+    }
+  },
+  "required": ["arms", "instruments", "measurements"]
+}
