@@ -15,7 +15,7 @@ To build that list precisely, you must also identify (a) every study arm with it
 You must extract the following:
 
 1. **Arms**: Every study arm/condition mentioned in the paper, with the arm name and category.
-2. **Instruments**: Every questionnaire/scale/instrument used to score participants (regardless of construct: anxiety, depression, quality of life, sleep, motivation, side effects, gaming, etc.), with the canonical abbreviation, a `primary` flag, and the list of components reported numerically.
+2. **Instruments**: Every rating scale used to score participants on a **mental-health construct** (anxiety, depression, quality of life, well-being, stress, mood, PTSD/trauma, OCD, life satisfaction, resilience, and similar psychological domains). Include self-rated questionnaires, proxy-rated questionnaires (parent / teacher / partner / informant), and observer- or clinician-rated assessments. **Exclude** cognitive and performance-based tasks, physical function and strength tests, sleep questionnaires, pain measures, standalone fatigue measures, side-effect inventories, gaming engagement / enjoyment / motivation scales, and biomarkers. See §2 for the full scope rule, the parent-instrument subscale carve-out, and the default-include rule for borderline cases. Each instrument is reported with its canonical abbreviation, a `primary` flag, and the list of components reported numerically.
 3. **Measurements**: For each (group × outcome × time) cell, the raw mean and standard deviation, with exhaustive page numbers and exact quotes documenting the source. Time is restricted to **pre** and **post**; mid-intervention and follow-up assessments (1-month, 3-month, 6-month, 12-month, ...) are **excluded**.
 
 ## Where to Find This Information
@@ -92,7 +92,43 @@ Methods: "Two cohorts of participants were compared." [no further description of
 
 ### 2. Instruments
 
-**Task**: List every questionnaire / scale / instrument used to score participants in the trial. **Do not** restrict to anxiety or depression: include quality of life, sleep, motivation, side effects, gaming, well-being, stress, fatigue, cognitive functioning, etc. — everything that produces a numerical score.
+**Task**: List every **rating scale** used to score participants on a **mental-health construct** in the trial. The scope is defined on two axes — administration mode (which raters are eligible) and construct (which domains are eligible).
+
+**Administration modes (all included)**:
+
+- **Self-rated questionnaires** — completed by the participant about themselves (e.g., PHQ-9, GAD-7, BDI-II, DASS-21, STAI, HADS).
+- **Proxy-rated questionnaires** — completed by a parent, teacher, partner, or other informant about the participant (common in pediatric and dementia trials, e.g., parent-report SCARED, teacher-report MASC).
+- **Observer- and clinician-rated assessments** — scored by a clinician or trained observer based on interview or structured observation (e.g., HAM-D, MADRS, Y-BOCS clinician version, CGI).
+
+**Eligible constructs (mental-health domains only)**:
+
+Anxiety, depression, quality of life, well-being, stress, mood, PTSD/trauma symptoms, OCD symptoms, loneliness, life satisfaction, happiness, resilience, perceived self-efficacy, automatic/maladaptive thoughts, and similar psychological / mental-health domains.
+
+**Excluded — do not include any of the following in `instruments`** (regardless of how scores are reported):
+
+- **Cognitive and performance-based tasks**: n-back, Stroop, Trail Making, reaction-time, attention or working-memory training scores, neuropsychological test batteries, computerized cognitive tasks. Performance accuracy / reaction-time scores from such tasks are out of scope.
+- **Physical function and strength tests**: 6-minute walk test, grip strength, sit-to-stand, balance tests, range-of-motion measures, gait analyses.
+- **Sleep questionnaires** (e.g., PSQI, ISI) — even when self-rated.
+- **Pain measures** (e.g., NRS, VAS, Brief Pain Inventory, Pain Catastrophizing Scale) — including pain-catastrophizing scales.
+- **Standalone fatigue measures** (e.g., MFI, FSS, BFI).
+- **Side-effect / adverse-event questionnaires** (e.g., FIBSER, antidepressant side-effect inventories).
+- **Standalone subjective cognitive complaint questionnaires** (e.g., Cognitive Failures Questionnaire, PROMIS Cognitive Function).
+- **Gaming engagement / enjoyment / intrinsic motivation / manipulation-check / adherence scales** (e.g., Game Experience Questionnaire, Intrinsic Motivation Inventory).
+- **Biomarkers and physiological measures** (heart rate, cortisol, EEG, fMRI, blood pressure, etc.).
+
+**Subscale carve-out (parent-instrument rule)**:
+
+When the *enclosing instrument* is a mental-health rating scale that measures **anxiety or depression**, **all** of its reported subscales are in scope, even if an individual subscale's content overlaps an otherwise-excluded domain. Concretely:
+
+- The BDI-II "Somatic" / "Somatic-Affective" subscale is **in scope** because the BDI-II measures depression. Do not drop it as a "fatigue" measure.
+- A "Cognitive" subscale of the BDI-II or of an anxiety scale is **in scope** because the parent instrument measures depression / anxiety. Do not drop it as a "cognitive" measure.
+- Conversely, a *standalone* fatigue scale (e.g., FSS) or a *standalone* cognitive complaints questionnaire (e.g., CFQ) remains **out of scope**, because the parent instrument is not an anxiety or depression scale.
+
+The gating question is always **what construct does the enclosing instrument measure**, not what an individual subscale's name happens to suggest.
+
+**Default rule for borderline cases**:
+
+If an instrument's mental-health relevance is genuinely ambiguous and the explicit-exclusion list above does not cover it, **lean include** and document the borderline judgment by selecting supporting quotes that show why the instrument was treated as a mental-health measure (e.g., the construct described in Methods). Explicit exclusions always win over the default-include rule.
 
 **Fields per instrument:**
 
@@ -136,8 +172,6 @@ Methods: "Two cohorts of participants were compared." [no further description of
 | SPIN | Social Phobia Inventory | Total |
 | WEMWBS | Warwick-Edinburgh Mental Wellbeing Scale | Total |
 | PSS | Perceived Stress Scale | Total |
-| ISI | Insomnia Severity Index | Total |
-| PSQI | Pittsburgh Sleep Quality Index | Global, Subjective Sleep Quality, Sleep Latency, Sleep Duration, Sleep Efficiency, Sleep Disturbances, Sleep Medication, Daytime Dysfunction |
 | WHOQOL-BREF | World Health Organization Quality of Life-BREF | Physical, Psychological, Social, Environmental |
 | SF-36 | Short Form 36 Health Survey | (subscales by name as authors report; e.g. Physical Functioning, Role Physical, Bodily Pain, General Health, Vitality, Social Functioning, Role Emotional, Mental Health) |
 | SF-12 | Short Form 12 Health Survey | (subscales as reported, including Physical Component Summary, Mental Component Summary) |
@@ -168,10 +202,22 @@ Note: Even though both DASS-21 Depression and DASS-21 Stress are not the primary
 ```
 
 ```
-Methods: "Sleep was assessed with the PSQI."
-Results: Reports only the global PSQI score per group.
-→ Instrument 1: name="PSQI", primary=false, components=["PSQI - Global"]
-Note: Component subscales are listed in `components` only if the paper reports them numerically. Here only the Global score is reported.
+Methods: "Depressive symptoms were assessed at baseline and post-intervention by a trained clinician using the Hamilton Depression Rating Scale (HAM-D)."
+Results: Reports HAM-D total scores per group at pre and post.
+→ Instrument 1: name="HAM-D", primary=false (or true if designated primary), components=["HAM-D - Total"]
+Note: HAM-D is a clinician-rated assessment, which is in scope alongside self- and proxy-rated questionnaires.
+```
+
+```
+Methods: "Cognitive functioning was assessed with a computerized n-back task at baseline and post-intervention. Depression was measured with the BDI-II as the primary outcome."
+→ Instrument 1: name="BDI-II", primary=true, components=["BDI-II - Total"]
+The n-back task is a performance-based cognitive task and is therefore **excluded** from `instruments` regardless of how its scores are reported. Only the BDI-II is extracted.
+```
+
+```
+Methods: "Sleep quality was assessed with the PSQI; depressive symptoms with the PHQ-9; pain intensity with a 0-10 NRS."
+→ Instrument 1: name="PHQ-9", primary=false (or true if designated primary), components=["PHQ-9 - Total"]
+Both the PSQI (sleep questionnaire) and the NRS (pain measure) are in the explicit-exclusion list and are therefore **not** included in `instruments`. Only the PHQ-9 is extracted.
 ```
 
 ```
@@ -304,6 +350,24 @@ If the paper reports a single statistic pooled across all arms, do not split it.
 
 If an instrument is mentioned but no numeric statistic is reported anywhere for it, **do not** include it in `instruments`. Only list instruments for which at least one (group, time) cell has a reported statistic.
 
+### Excluded instrument types (out of scope — do not include in `instruments`)
+
+The following classes of instruments are **explicitly out of scope** for this prompt, regardless of whether they yield a numeric score:
+
+- **Cognitive and performance-based tasks**: n-back, Stroop, Trail Making, reaction-time tasks, attention / working memory training scores, neuropsychological test batteries (e.g., WAIS, RBANS), and any computerized cognitive task whose score reflects performance rather than self-rated symptoms.
+- **Physical function and strength tests**: 6-minute walk, grip strength, sit-to-stand, balance, range-of-motion, gait analyses.
+- **Sleep questionnaires** (e.g., PSQI, ISI), even when self-rated.
+- **Pain measures** (e.g., NRS, VAS, Brief Pain Inventory, Pain Catastrophizing Scale), including catastrophizing scales.
+- **Standalone fatigue measures** (e.g., MFI, FSS, BFI).
+- **Side-effect / adverse-event inventories** (e.g., FIBSER, antidepressant side-effect inventories).
+- **Standalone subjective cognitive complaint questionnaires** (e.g., Cognitive Failures Questionnaire, PROMIS Cognitive Function).
+- **Gaming engagement / enjoyment / intrinsic motivation / manipulation-check / adherence scales** (e.g., Game Experience Questionnaire, Intrinsic Motivation Inventory).
+- **Biomarkers and physiological measures** (heart rate, cortisol, EEG, fMRI, blood pressure, etc.).
+
+**Subscale carve-out**: When the *enclosing* instrument is an anxiety or depression rating scale, **all** of its reported subscales remain in scope even when an individual subscale's content (e.g., a "Cognitive" or "Somatic" subscale of the BDI-II) overlaps an otherwise-excluded domain. The gating question is what the parent instrument measures, not what an individual subscale's name suggests.
+
+**Precedence**: Explicit exclusions in the list above always win over the default-include rule for borderline instruments.
+
 ### Effect sizes and inferential statistics
 
 Effect sizes (Cohen's d, Hedges' g, η²p, ω²), p-values, F-statistics, t-statistics, confidence intervals on differences, and similar inferential outputs are **not** descriptive means and are out of scope. Do not extract them.
@@ -324,6 +388,7 @@ Effect sizes (Cohen's d, Hedges' g, η²p, ω²), p-values, F-statistics, t-stat
 10. **Per-cell evidence**: Each measurement row carries its own `pages` and `quotes` documenting that specific cell. The reader must be able to verify each row independently.
 11. **Subscales independent of Total**: Total and each subscale are independent rows. Do not decompose or recompose.
 12. **Empty arrays are valid**: `instruments` may be `[]` (no scored instruments). `measurements` may be `[]` (protocol paper).
+13. **Scope filter (rating scales of mental-health constructs only)**: Include self-, proxy-, and observer/clinician-rated rating scales of mental-health constructs (anxiety, depression, quality of life, well-being, stress, mood, PTSD, OCD, life satisfaction, resilience, etc.). Exclude cognitive and performance-based tasks, physical function and strength tests, sleep / pain / standalone fatigue / side-effect / standalone subjective cognitive complaint / gaming-engagement instruments, and biomarkers. Apply the **parent-instrument subscale carve-out**: when the enclosing instrument is an anxiety or depression rating scale, every reported subscale of that instrument is in scope even if the subscale's name overlaps an otherwise-excluded domain (e.g., BDI-II "Somatic-Affective" stays in). For genuinely borderline instruments not covered by the explicit-exclusion list, **lean include** and document the borderline judgment via supporting quotes; explicit exclusions always win.
 
 ## Source Citation Requirements
 
@@ -681,7 +746,7 @@ Notes on the example:
 Please analyze the provided PDF document and extract the outcome measurement information according to the specifications above. Remember:
 
 1. Restrict time to **pre** (baseline) and **post** (end-of-intervention) only — discard mid and follow-up assessments.
-2. Include **every instrument** used to score participants, regardless of construct.
+2. Include rating scales of **mental-health constructs** only — self-, proxy-, and observer/clinician-rated. Exclude cognitive and performance-based tasks, physical function and strength tests, sleep / pain / standalone fatigue / side-effect / standalone subjective cognitive complaint / gaming-engagement instruments, and biomarkers. Apply the parent-instrument subscale carve-out: every reported subscale of an anxiety or depression instrument is in scope.
 3. Use canonical instrument abbreviations and subscale labels per the canonical table; for instruments not listed, use the authors' abbreviation and subscale wording in Title Case.
 4. Compose `arms[].identifier` as `<arm name> (<category|unknown>)` and `measurements[].outcome` as `<Instrument> - <Subscale|Total> - <pre|post>`.
 5. Emit one measurement row per (group × outcome × time) cell that has any reported statistic. Skip cells with no data.
