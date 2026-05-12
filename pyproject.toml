@@ -38,7 +38,7 @@ dependencies = [
   'anthropic',
   'click',
   'google-genai',
-  'numpy>=1.23,<3',
+  'numpy>=2.4.4,<3',
   'packaging',
   'psutil',
   'PyQt6>=6.5',
