@@ -1,6 +1,6 @@
 [build-system]
 build-backend = 'setuptools>=83.0.0'
-requires = ['setuptools >= 64.0.0', 'setuptools_scm>=10.2.0']
+requires = ['setuptools >= 64.0.0', 'setuptools_scm>=10.2.1']
 
 [dependency-groups]
 ide = [
