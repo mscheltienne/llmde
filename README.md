@@ -134,17 +134,10 @@ You can also provide your own prompt files:
 from pathlib import Path
 
 # For Gemini (with JSON schema)
-response = model.query(
-    Path("my_prompt.md"),
-    Path("my_schema.json"),
-    ["paper.pdf"]
-)
+response = model.query(Path("my_prompt.md"), Path("my_schema.json"), ["paper.pdf"])
 
 # For Claude (no JSON schema)
-response = model.query(
-    Path("my_prompt.md"),
-    ["paper.pdf"]
-)
+response = model.query(Path("my_prompt.md"), ["paper.pdf"])
 ```
 
 ## Command Line Interface
