@@ -23,7 +23,7 @@ test = [
 
 [project]
 authors = [
-  {email = 'mathieu.scheltienne@gmail.com', name = 'Mathieu Scheltienne'},
+  { email = 'mathieu.scheltienne@gmail.com', name = 'Mathieu Scheltienne' },
 ]
 classifiers = [
   'Natural Language :: English',
@@ -53,9 +53,9 @@ keywords = [
   'python',
   'scientific papers',
 ]
-license = {file = 'LICENSE'}
+license = { file = 'LICENSE' }
 maintainers = [
-  {email = 'mathieu.scheltienne@gmail.com', name = 'Mathieu Scheltienne'},
+  { email = 'mathieu.scheltienne@gmail.com', name = 'Mathieu Scheltienne' },
 ]
 name = 'llmde'
 readme = 'README.md'
