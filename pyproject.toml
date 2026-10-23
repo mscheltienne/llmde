@@ -65,8 +65,8 @@ requires-python = '>=3.11'
 llmde = 'llmde._commands.main:run'
 
 [project.urls]
-source = 'https://github.com/mscheltienne/llmde'
-tracker = 'https://github.com/mscheltienne/llmde/issues'
+source = 'https://github.com/naimagradi/llmde'
+tracker = 'https://github.com/naimagradi/llmde/issues'
 
 [tool.codespell]
 check-filenames = true

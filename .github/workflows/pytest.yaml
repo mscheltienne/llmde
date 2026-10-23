@@ -41,7 +41,7 @@ jobs:
       - run: llmde sys-info --developer
       - run: pytest tests --cov=llmde --cov-report=xml --cov-config=pyproject.toml
       - uses: codecov/codecov-action@v7
-        if: ${{ github.repository == 'mscheltienne/llmde' }}
+        if: ${{ github.repository == 'naimagradi/llmde' }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
@@ -71,6 +71,6 @@ jobs:
       - run: llmde sys-info --developer
       - run: pytest tests --cov=llmde --cov-report=xml --cov-config=pyproject.toml
       - uses: codecov/codecov-action@v7
-        if: ${{ github.repository == 'mscheltienne/llmde' }}
+        if: ${{ github.repository == 'naimagradi/llmde' }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
